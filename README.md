@@ -1,7 +1,9 @@
-Syspack - System Management Framework based on BSD Make
+# Syspack - System Management Framework based on BSD Make
 
+***
 NOTE: This software is still an alpha version.  There are a few
 documenation in mk/doc directory. 
+***
 
 Syspack is a system configuration management framework
 covering the following scenarios and not limited to them:
