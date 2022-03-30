@@ -1,0 +1,9 @@
+key "public.example.org" {
+	algorithm hmac-sha256;
+	secret "zv9MC8WFyqhvPIyNUVn0+r1lFUR9/Te1KBZn6Z0RHRI=";
+};
+masters "public.example.org" {
+	192.2.0.2 key public.example.org;
+	192.2.0.3 key public.example.org;
+	192.2.0.4 key public.example.org;
+};

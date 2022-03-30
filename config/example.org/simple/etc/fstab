@@ -1,0 +1,4 @@
+# Device		Mountpoint	FStype	Options		Dump	Pass#
+/dev/da0s1b		none		swap	sw		0 0
+/dev/da0s1a		/		ufs	rw		1 1
+tmpfs			/tmp		tmpfs	rw,size=1g,mode=1777	0 0

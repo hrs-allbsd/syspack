@@ -1,0 +1,15 @@
+# Device		Mountpoint	FStype	Options		Dump	Pass#
+/dev/mirror/gm0s1b	none		swap	sw		0 0
+#/dev/mirror/gm0s1a	/		ufs	rw		1 1
+/dev/ufsid/4f9deb6662d0455b /		ufs	rw		1 1
+tmpfs			/tmp		tmpfs	rw,size=1g,mode=1777	0 0
+#/dev/mirror/gm0s1e	/usr		ufs	rw		2 2
+/dev/ufsid/4f9e07c776d1bc3f /usr	ufs	rw		2 2
+#/dev/mirror/gm0s1f	/var		ufs	rw,noatime	2 2
+/dev/ufsid/4f9e31982fabc469 /var	ufs	rw,noatime	2 2
+#/dev/mirror/gm0s1d	/var/log	ufs	rw,noatime	3 3
+/dev/ufsid/4f9e33d6671d93d7 /var/log	ufs	rw,noatime	3 3
+#/dev/mirror/gm0s1g	/var/mail	ufs	rw,noatime,noauto	3 3
+/dev/ufsid/4f9e33d3188bf853 /var/mail	ufs	rw,noatime,noauto	3 3
+#/dev/mirror/gm0s1h	/a		ufs	rw,noatime	4 4
+/dev/ufsid/4f9e352c5c523b25 /a		ufs	rw,noatime	4 4

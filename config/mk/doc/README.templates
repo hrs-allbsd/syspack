@@ -1,0 +1,80 @@
+Templates Plugin
+
+DESCRIPTION
+
+Templates plugin is a text file generator with simple string
+repleacement specified by key-value pairs.  A file can be generated
+from one or more source files.  TEMPLATES variable activates this
+feature like this:
+
+TEMPLATES=	foo.txt=temp_foo|temp_bar::FOO=BAR,BAR=BAZ
+
+This means that foo.txt will be generated from temp_foo.in and
+temp_bar.in as the templates, and keywords %%FOO%% and %%BAR%%
+in these files will be replaced with BAR and BAZ.  If you just
+want to concatinate two files, fileA and fileB, you can specify
+foo.txt=fileA|fileB without key-value pairs.
+
+Syntax of TEMPLATES
+
+The syntax is {TARGET_FILE}={TEMPLATE_NAME}::{KEY=VALUE}.
+The "::{KEY=VALUE}" is optional.  Multiple entries of TEMPLATE_NAME and
+KEY=VALUE are allowed.  TEMPLATE_NAME must be separated by '|',
+and KEY=VALUE must be separated by ','.
+
+In the above example, "temp_foo.in" template will be looked up
+in directories of .CURDIR, TEMPLATEDIR_temp_foo, TEMPLATEDIR,
+TEMPLATEBASE in this order.  The actual file must be temp_foo.in.
+The first-found template will be used.
+
+The key-value pairs can be stored into one or more files like the following:
+
+TEMPLATES=	foo.txt=temp_foo|temp_bar::FOO=BAR,BAR=BAZ,kv.txt,kv2.txt
+
+In this case, kv.txt and kv2.txt that have lines in a A=B format will be
+read and used as additional parameters to FOO and BAR.  Note that '|' is 
+used for the delimiter of the key-value pairs.  You need to use '\|' if
+you want a literal '|' in the pairs.  kv.txt and kv2.txt must be in
+the template search path.
+
+The TEMPLATES line also supports filters:
+
+TEMPLATES=	foo.txt=temp_foo|temp_bar::FOO=BAR,BAR=BAZ,kv.txt,+param
+
+'+filename' means that 'filename' is invoked as a filter program.  In
+this example, foo.txt is generated from temp_foo.in and temp_bar.in with
+parameter replacements of %%FOO%%, %%BAR%%, and key-value pairs in kv.txt,
+and then the results will be processed by the following command line: 
+
+ % cat results.txt | filename > foo.txt 
+
+where results.txt is the results of the parameter replacements.  'filename'
+must be an execulable (binary or script).
+
+Key-value pairs for replacement can also be specified in separate
+variables, TEMPLATE_PLIST_{TEMPLATE_NAME} and
+TEMPLATE_PLIST_FILE_{TARGET_FILE}:
+
+TEMPLATES=	foo.txt=temp_foo
+TEMPLATE_PLIST_temp_foo=	FOO=BAR
+TEMPLATE_PLIST_FILE_foo.txt=	BAR=BAZ
+
+Although the same replacements will be done, TEMPLATE_PLIST_temp_foo
+will be applied commonly to xxx=temp_foo, where "xxx" is a target file name,
+and TEMPLATE_PLIST_FILE_foo.txt will be done to foo.txt only.  These
+variables might be simpler when many files are generated from a template.
+
+TEMPLATE_PLIST_DEFAULT has key-value pairs which are commonly applied to
+all of templates.
+
+VARIABLES
+
+TEMPLATES
+TEMPLATEDIR
+TEMPLATE_PLIST_{TEMPLATE_NAME}
+TEMPLATE_PLIST_FILE_{TARGET_FILE}
+TEMPLATE_PLIST_DEFAULT
+
+TARGETS
+
+"templates" shows available templates.

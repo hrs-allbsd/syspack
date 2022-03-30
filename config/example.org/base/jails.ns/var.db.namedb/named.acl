@@ -1,0 +1,10 @@
+acl example-private {
+  ::1/128;
+  fe80::/64;
+
+  127/8;
+};
+
+acl allbsd-recursive {
+  192.0.2.0/24;
+};

@@ -1,0 +1,15 @@
+2022-03-30:
+
+- pkg plugin has been added.
+
+2022-02-20:
+
+- [Incompatible change] JBASE was renamed to JAIL_BASE.
+
+- ${.PARSEDIR} is added to .include lines in Makefile.inc.
+  This should be no-op in most cases.
+
+- The standard directory structure is changed so that SITE/HOST
+  has 'root' for the root directory when one or more jails are used
+  on the same host.  See also example.org/base/{root,jail.ns} for more
+  specifics.
