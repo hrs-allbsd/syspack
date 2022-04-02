@@ -23,8 +23,8 @@ KEY=VALUE are allowed.  TEMPLATE_NAME must be separated by '|',
 and KEY=VALUE must be separated by ','.
 
 In the above example, "temp_foo.in" template will be looked up
-in directories of .CURDIR, TEMPLATEDIR_temp_foo, TEMPLATEDIR,
-TEMPLATEBASE in this order.  The actual file must be temp_foo.in.
+in directories of .CURDIR, TEMPLATESDIR_temp_foo, TEMPLATESDIR,
+TEMPLATESBASE in this order.  The actual file must be temp_foo.in.
 The first-found template will be used.
 
 The key-value pairs can be stored into one or more files like the following:
@@ -70,7 +70,7 @@ all of templates.
 VARIABLES
 
 TEMPLATES
-TEMPLATEDIR
+TEMPLATESDIR
 TEMPLATE_PLIST_{TEMPLATE_NAME}
 TEMPLATE_PLIST_FILE_{TARGET_FILE}
 TEMPLATE_PLIST_DEFAULT

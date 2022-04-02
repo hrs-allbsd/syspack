@@ -29,8 +29,10 @@
 .if !target(__<bsd.config.mk>__)
 __<bsd.config.mk>__:
 
+# .PARSEDIR is ".spx/syspack/config/mk"
 CONFBASE:=	${.PARSEDIR}
 MODULESBASE:=	${CONFBASE}/../modules
+GLOBALBASE:=	${.PARSEDIR}/../../../..
 #
 # DEBUG messages
 #
@@ -124,37 +126,45 @@ TMPDIR?=	/tmp
 #
 # MODULES
 #
+.for _BASE in ${MODULESBASE} ${GLOBALBASE}/modules
 _MODULE_PLUGINS_ALL!=\
-	(cd ${MODULESBASE} && /bin/ls -d */plugins*) 2>/dev/null || :
+	(cd ${_BASE} && /bin/ls -d */plugins*) 2>/dev/null || :
 _MODULE_PLUGINS_ALL:=\
 	${_MODULE_PLUGINS_ALL:C,\.[^.]+$,,}
-.for _M in ${MODULES}
+.  for _M in ${MODULES}
+.    if exists(${_BASE}/${_M}/plugins)
 _MODULE_PLUGINS+=\
 	${_MODULE_PLUGINS_ALL:M${_M}/plugins}
 _MODULE_PLUGINSDIRS+=\
-	${MODULESBASE}/${_MODULE_PLUGINS_ALL:M${_M}/plugins}
-.endfor
+	${_BASE}/${_MODULE_PLUGINS_ALL:M${_M}/plugins}
+.    endif
+.  endfor
 
 _MODULE_TEMPLATES_ALL!=\
-	(cd ${MODULESBASE} && /bin/ls -d */templates*) 2>/dev/null || :
+	(cd ${_BASE} && /bin/ls -d */templates*) 2>/dev/null || :
 _MODULE_TEMPLATES_ALL:=\
 	${_MODULE_TEMPLATES_ALL:C,\.[^.]+$,,}
-.for _M in ${MODULES}
+.  for _M in ${MODULES}
+.    if exists(${_BASE}/${_M}/templates)
 _MODULE_TEMPLATES+=\
 	${_MODULE_TEMPLATES_ALL:M${_M}/templates}
 _MODULE_TEMPLATESDIRS+=\
-	${MODULESBASE}/${_MODULE_TEMPLATES_ALL:M${_M}/templates}
-.endfor
+	${_BASE}/${_MODULE_TEMPLATES_ALL:M${_M}/templates}
+.    endif
+.  endfor
 
 _MODULE_RECEIPES_ALL!=\
-	(cd ${MODULESBASE} && /bin/ls -d */receipes*) 2>/dev/null || :
+	(cd ${_BASE} && /bin/ls -d */receipes*) 2>/dev/null || :
 _MODULE_RECEIPES_ALL:=\
 	${_MODULE_RECEIPES_ALL:C,\.[^.]+$,,}
-.for _M in ${MODULES}
+.  for _M in ${MODULES}
+.    if exists(${_BASE}/${_M}/templates)
 _MODULE_RECEIPES+=\
 	${_MODULE_RECEIPES_ALL:M${_M}/receipes}
 _MODULE_RECEIPESDIRS+=\
-	${MODULESBASE}/${_MODULE_RECEIPES_ALL:M${_M}/receipes}
+	${_BASE}/${_MODULE_RECEIPES_ALL:M${_M}/receipes}
+.    endif
+.  endfor
 .endfor
 
 # XXX
@@ -537,8 +547,12 @@ vars +vars:
 TARGETS+=	modules
 modules.DESC=	show all modules
 modules +modules:
-	@${_HEADING1} "Modules"
+.if exists(${MODULESBASE})
 	@/bin/ls ${MODULESBASE} 
+.endif
+.if exists(${GLOBALBASE}/modules)
+	@/bin/ls ${GLOBALBASE}/modules
+.endif
 #
 # Global targets for UI
 #

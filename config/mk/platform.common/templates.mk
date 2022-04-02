@@ -29,13 +29,13 @@
 .if !target(__<templates.mk>__)
 __<templates.mk>__:
 .endif
-TEMPLATEBASE:=	${CONFBASE}/templates
+TEMPLATESBASE:=	${CONFBASE}/templates
 
 TARGETS.templates=	templates
 templates.DESC=		show templates
 VARS.templates=	TEMPLATES \
 		TEMPLATE_PLIST_DEFAULT \
-		TEMPLATEDIR
+		TEMPLATESDIR
 
 .if !empty(_PLUGINS:Mjail)
 TEMPLATE_PLIST_DEFAULT+= \
@@ -43,8 +43,8 @@ TEMPLATE_PLIST_DEFAULT+= \
 	JAIL=${JAIL}
 .endif
 
-TEMPLATEDIR+=	${TEMPLATEBASE} \
-		${TEMPLATEBASE}/../../templates
+TEMPLATESDIR+=	${TEMPLATESBASE} \
+		${GLOBALBASE}/templates
 
 _TEMPLATE_SUFFIX=	.in
 _RESOLVED_TEMPLATE_SRCS:=
@@ -55,23 +55,23 @@ _DST_${_TL:hash}:=	${_TL:C/([^=]+)=(.*)/\1/}
 _TS_${_TL:hash}:=	${_TL:C/([^=]+)=([^:]+).*/\2/}
 _P_${_TL:hash}:=	${_TL:M*\:\:*:C/[^=]+=[^:]+::(.*)/\1/}
 #
-# Build a search path and define it as _TEMPLATEDIR
+# Build a search path and define it as _TEMPLATESDIR
 #
 ## 1st: Add .CURDIR
-_TEMPLATEDIR:=	${.CURDIR}
+_TEMPLATESDIR:=	${.CURDIR}
 
-## 2nd: add TEMPLATEDIR_template if defined
+## 2nd: add TEMPLATESDIR_template if defined
 .  for _T in ${_TS_${_TL:hash}:S,|, ,g:[@]}
 VARS.templates+=TEMPLATE_PLIST_${_T}
-_TEMPLATEDIR+=	${TEMPLATEDIR_${_T}}
+_TEMPLATESDIR+=	${TEMPLATESDIR_${_T}}
 .  endfor
 
-## 3rd: Add TEMPLATEDIR as global
+## 3rd: Add TEMPLATESDIR as global
 VARS.templates+=TEMPLATE_PLIST_FILE_${_DST_${_TL:hash}}
-_TEMPLATEDIR+=	${TEMPLATEDIR}
+_TEMPLATESDIR+=	${TEMPLATESDIR}
 
 ## 4th: Add _MODULE_TEMPLATESDIRS
-_TEMPLATEDIR+=	${_MODULE_TEMPLATESDIRS}
+_TEMPLATESDIR+=	${_MODULE_TEMPLATESDIRS}
 #
 #
 # Build _TEMPLATE_PLIST
@@ -109,12 +109,12 @@ _REINPLACE_ARGS_${_TL:hash}:= \
 #
 _KFLIST:=${_TEMPLATE_PLIST_${_TL:hash}:N*=*:N\+*}
 #
-# Lookup _KFLIST in ${_TEMPLATEDIR}
+# Lookup _KFLIST in ${_TEMPLATESDIR}
 #
 _TEMPLATE_KFLIST_${_TL:hash}:=
 .for _F in ${_KFLIST}
 _KFLIST_${_F:hash}=
-. for _D in ${_TEMPLATEDIR}
+. for _D in ${_TEMPLATESDIR}
 .  if exists(${_D}/${_F})
 _KFLIST_${_F:hash}+=	${_D}/${_F}
 .  endif
@@ -122,7 +122,7 @@ _KFLIST_${_F:hash}+=	${_D}/${_F}
 . if empty(_KFLIST_${_F:hash})
 .  error ${SPX_ERROR} \
          Template parameter file "${_F}" is not found.\
-         The template search path was ${_TEMPLATEDIR:tA}
+         The template search path was ${_TEMPLATESDIR:tA}
 . endif
 # Use the first item
 _TEMPLATE_KFLIST_${_TL:hash}+=	${_KFLIST_${_F:hash}:[1]}
@@ -141,12 +141,12 @@ _REINPLACE_ARGS_${_TL:hash}:= \
 #
 _FLIST:=${_TEMPLATE_PLIST_${_TL:hash}:M\+*}
 #
-# Lookup ${_TEMPLATEDIR}
+# Lookup ${_TEMPLATESDIR}
 #
 _TEMPLATE_FLIST_${_TL:hash}:=
 .for _F in ${_FLIST}
 _FLIST_${_F:hash}=
-. for _D in ${_TEMPLATEDIR}
+. for _D in ${_TEMPLATESDIR}
 .  if exists(${_D}/${_F})
 _FLIST_${_F:hash}+=	${_D}/${_F}
 .  endif
@@ -154,7 +154,7 @@ _FLIST_${_F:hash}+=	${_D}/${_F}
 . if empty(_FLIST_${_F:hash})
 .  error ${SPX_ERROR} \
          Template filter file "${_F}" is not found.\
-         The template search path was ${_TEMPLATEDIR:tA}
+         The template search path was ${_TEMPLATESDIR:tA}
 . endif
 # Use the first item
 _TEMPLATE_FLIST_${_TL:hash}+=	${_FLIST_${_F:hash}:[1]}
@@ -163,7 +163,7 @@ _TEMPLATE_FLIST_${_TL:hash}+=	${_FLIST_${_F:hash}:[1]}
 _TEMPLATE_FLIST_${_TL:hash}=	${CAT_CMD}
 .endif
 #
-# Look up _SRCS (templates) from _TEMPLATEDIR
+# Look up _SRCS (templates) from _TEMPLATESDIR
 #
 _SRCS:=${_TS_${_TL:hash}:S,|, ,g:[@]:S,$,${_TEMPLATE_SUFFIX},}
 #
@@ -172,7 +172,7 @@ _SRCS:=${_TS_${_TL:hash}:S,|, ,g:[@]:S,$,${_TEMPLATE_SUFFIX},}
 #
 .  if !target(${_DST_${TL:hash}})
 .    for _S in ${_SRCS}
-.      for _D in ${_TEMPLATEDIR}
+.      for _D in ${_TEMPLATESDIR}
 .        if exists(${_D}/${_S})
 _SLIST_${_TL:hash}_${_S:hash}+=${_D}/${_S}
 .        endif
@@ -182,7 +182,7 @@ _SRCS_${_TL:hash}+=	${_SLIST_${_TL:hash}_${_S:hash}:[1]}
 .      if empty(_SRCS_${_TL:hash})
 .        error ${SPX_ERROR} \
                Template file "${_S}" is not found.\
-               The template search path was ${_TEMPLATEDIR:tA}
+               The template search path was ${_TEMPLATESDIR:tA}
 .      endif
 _RESOLVED_TEMPLATE_SRCS:=${_RESOLVED_TEMPLATE_SRCS} ${_SRCS_${_TL:hash}}
 .    endfor
@@ -214,10 +214,26 @@ CLEANFILES+=	${_DST_${_TL:hash}}
 .  endif
 .endfor # Each template
 
+#
+# Build a search path and define it as _TEMPLATESDIR
+# when no TEMPLATES is defined
+#
+.if empty(_TEMPLATESDIR)
+
+## 1st: Add .CURDIR
+_TEMPLATESDIR:=	${.CURDIR}
+
+## 2nd: Add TEMPLATESDIR as global
+_TEMPLATESDIR+=	${TEMPLATESDIR}
+
+## 3rd: Add _MODULE_TEMPLATESDIRS
+_TEMPLATESDIR+=	${_MODULE_TEMPLATESDIRS}
+.endif
+
 templates:
 	@${_HEADING1} "Template search path:"
-	@for D in ${_TEMPLATEDIR:tA}; do \
-	    echo "  $$D"; \
+	@for D in ${_TEMPLATESDIR:tA}; do \
+	    [ -d "$$D" ] && echo "  $$D" || :; \
 	done
 	@${_HEADING1} "Used Templates:"
 	@for F in ${_RESOLVED_TEMPLATE_SRCS:tA:O:u}; do \
@@ -225,14 +241,18 @@ templates:
 	done
 	@echo
 	@${_HEADING1} "Available Templates:"
-.for _D in ${_TEMPLATEDIR:N${.CURDIR}}
+.for _D in ${_TEMPLATESDIR:N${.CURDIR}}
+.  if exists(${_D})
 	@cd ${_D} && /bin/ls | \
 	    ${SED_CMD} -e "/+.*/d;s/${_TEMPLATE_SUFFIX:q}$$//;s|^|  ${_D:tA:Q}/|" 
+.  endif
 .endfor
 	@${_HEADING1} "Available Filters:"
-.for _D in ${_TEMPLATEDIR:N${.CURDIR}}
+.for _D in ${_TEMPLATESDIR:N${.CURDIR}}
+.  if exists(${_D})
 	@cd ${_D} && /bin/ls +* 2>/dev/null | \
 	    ${SED_CMD} -e "s/${_TEMPLATE_SUFFIX:q}$$//;s|^|  ${_D:tA:Q}/|" 
+.  endif
 .endfor
 
 .PHONY: tempmates
