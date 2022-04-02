@@ -39,7 +39,7 @@ __<release.mk>__:
 VARS.release=	RELEASE
 UNAME_r!=	uname -r
 UNAME_s!=	uname -s
-RELEASEBASEDIR:=	${.PARSEDIR}/../obj/release
+RELEASEBASEDIR:=	${GLOBALBASE}/.spx/obj/release
 . if !exists(${RELEASEBASEDIR})
 .  error "${RELEASEBASEDIR} not found"
 . endif

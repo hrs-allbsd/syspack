@@ -38,7 +38,7 @@ VARS.logging=		LOGDIR
 #
 #
 #
-LOGDIR?=${CONFBASE}/log
+LOGDIR?=${GLOBALBASE}/.spx/log
 
 #
 # Helpers
