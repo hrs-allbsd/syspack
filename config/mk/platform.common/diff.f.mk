@@ -44,22 +44,41 @@ diff-${_tag}::
 	_dstdir="${_DESTDIR_${_dir:hash}:C,[/]+,/,g}"; \
 	if [ ${.CURDIR} != ${.OBJDIR} ]; then \
 	    if [ -r ${.OBJDIR}/${_file:T} ]; then \
-		_label="${_FA}./${_file:T} (obj-dir)${_FE}"; \
+		_label="./${_file:T} (obj-dir)"; \
 		_src="${.OBJDIR}/${_file:T}"; \
+		if ${IS_TERM}; then \
+		  _label="${_FA}$${_label}${_FE}"; \
+		fi; \
 	    elif [ -r ${.CURDIR}/${_file:T} ]; then \
-		_label="${_FA}./${_file:T} (work-dir)${_FE}"; \
+		_label="./${_file:T} (work-dir)"; \
 		_src="${.CURDIR}/${_file:T}"; \
+		if ${IS_TERM}; then \
+		  _label="${_FA}$${_label}${_FE}"; \
+		fi; \
 	    else \
-		_label="${_FD}./${_file:T} ${_FLW}(*** missing ***)${_FE}"; \
+		_label="./${_file:T}"; \
 		_src="/dev/null"; \
+		if ${IS_TERM}; then \
+		  _label="${_FD}$${_label} ${_FLW}(*** missing ***)${_FE}"; \
+		else \
+		  _label="$${_label} (*** missing ***)"; \
+		fi; \
 	    fi; \
 	else \
 	    if [ -r ${.CURDIR}/${_file:T} ]; then \
-		_label="${_FA}./${_file:T} (work-dir)${_FE}"; \
+		_label="./${_file:T} (work-dir)"; \
 		_src="${.OBJDIR}/${_file:T}"; \
+		if ${IS_TERM}; then \
+		  _label="${_FA}$${_label}${_FE}"; \
+		fi; \
 	    else \
-		_label="${_FA}./${_file:T} ${_FLW}(*** missing ***)${_FE}"; \
+		_label="./${_file:T}"; \
 		_src="/dev/null"; \
+		if ${IS_TERM}; then \
+		  _label="${_FD}$${_label} ${_FLW}(*** missing ***)${_FE}"; \
+		else \
+		  _label="$${_label} (*** missing ***)"; \
+		fi; \
 	    fi; \
 	fi; \
 	_exists=$$(${SUDO_CMD} ${SH_CMD} -c \
@@ -75,12 +94,23 @@ diff-${_tag}::
 	    :; \
 	elif [ "$$_exists" = 1 ]; then \
 	    ${_HEADING1} "diff $${_dstdir}/${_file:T} ${_file:T}:"; \
+	    _label0="$${_dstdir}/${_file:T} (stock)"; \
+	    if ${IS_TERM}; then \
+		_label0="${_FD}$${_label0}${_FE}"; \
+	    fi; \
 	    ${SUDO_CMD} ${CAT_CMD} $${_dstdir}/${_file:T} | ${_DIFF_CMD} \
-	      -L "${_FD}$${_dstdir}/${_file:T} (stock)${_FE}" - \
+	      -L "$${_label0}" - \
 	      -L "$${_label}" $${_src} | ${_DIFF_POST} || :; \
 	elif ${SUDO_CMD} ${TEST_CMD} ! -e $${_dstdir}/${_file:T}; then \
 	    ${_HEADING1} "diff $${_dstdir}/${_file:T} ${_file:T}:"; \
-	    ${_DIFF_CMD} -L "${_FD}$${_dstdir}/${_file:T} ${_FLW}(*** missing ***)${_FE}" /dev/null \
+	    _label0="$${_dstdir}/${_file:T}"; \
+	    if ${IS_TERM}; then \
+		_label0="${_FD}$${_label0} ${_FLW}(*** missing ***)${_FE}"; \
+	    else \
+		_label0="$${_label0} (*** missing ***)"; \
+	    fi; \
+	    ${_DIFF_CMD} \
+	      -L "$${_label0}" /dev/null \
 	      -L "$${_label}" $${_src} | ${_DIFF_POST} || :; \
 	elif ${SUDO_CMD} ${TEST_CMD} ! -r $${_dstdir}/${_file:T}; then \
 	    ${_HEADING1} " *** $${_dstdir}/${_file:T} is not readable ***"; \
@@ -115,15 +145,24 @@ diff-${_tag}:: ${_file:T}
 	_dstdir="${_DESTDIR_${_dir:hash}:C,[/]+,/,g}"; \
 	if [ ${.CURDIR} != ${.OBJDIR} ]; then \
 	    if [ -r ${.OBJDIR}/${_file:T} ]; then \
-		_label="${_FA}./${_file:T} (obj-dir)${_FE}"; \
+		_label="./${_file:T} (obj-dir)"; \
 		_src="${.OBJDIR}/${_file:T}"; \
+		if ${IS_TERM}; then \
+		  _label="${_FA}$${_label}${_FE}"; \
+		fi; \
 	    elif [ -r ${.CURDIR}/${_file:T} ]; then \
-		_label="${_FA}./${_file:T} (work-dir)${_FE}"; \
+		_label="./${_file:T} (work-dir)"; \
 		_src="${.CURDIR}/${_file:T}"; \
+		if ${IS_TERM}; then \
+		  _label="${_FA}$${_label}${_FE}"; \
+		fi; \
 	    fi; \
 	else \
-	    _label="${_FA}./${_file:T} (work-dir)${_FE}"; \
+	    _label="./${_file:T} (work-dir)"; \
 	    _src="${.CURDIR}/${_file:T}"; \
+	    if ${IS_TERM}; then \
+	      _label="${_FA}$${_label}${_FE}"; \
+	    fi; \
 	fi; \
 	_exists=$$(${SUDO_CMD} ${SH_CMD} -c \
 	    "if [ -e $${_dstdir}/${_file:T} -a \
@@ -135,13 +174,24 @@ diff-${_tag}:: ${_file:T}
 	      fi; \
 	    fi"); \
 	if [ "$$_exists" = 1 ]; then \
+	    _label0="$${_dstdir}/${_file:T} (stock)"; \
+	    if ${IS_TERM}; then \
+	      _label0="${_FD}$${_label0}${_FE}"; \
+	    fi; \
 	    ${_HEADING1} "diff $${_dstdir}/${_file:T} ${_file:T}:"; \
 	    ${SUDO_CMD} ${CAT_CMD} $${_dstdir}/${_file:T} | ${_DIFF_CMD} \
-	      -L "${_FD}$${_dstdir}/${_file:T} (stock)${_FE}" - \
+	      -L "$${_label0}" - \
 	      -L "$${_label}" $${_src} | ${_DIFF_POST} || :; \
 	elif ${SUDO_CMD} ${TEST_CMD} ! -e $${_dstdir}/${_file:T}; then \
+	    _label0="$${_dstdir}/${_file:T}"; \
+	    if ${IS_TERM}; then \
+	      _label0="${_FD}$${_label0} ${_FLW}(*** missing ***)${_FE}"; \
+	    else \
+	      _label0="$${_label0} (*** missing ***)"; \
+	    fi; \
 	    ${_HEADING1} "diff $${_dstdir}/${_file:T} ${_file:T}:"; \
-	    ${_DIFF_CMD} -L "${_FD}$${_dstdir}/${_file:T} ${_FLW}(*** missing ***)${_FE}" /dev/null \
+	    ${_DIFF_CMD} \
+	      -L "$${_label0}" /dev/null \
 	      -L "$${_label}" $${_src} | ${_DIFF_POST} || :; \
 	elif ${SUDO_CMD} ${TEST_CMD} ! -r $${_dstdir}/${_file:T}; then \
 	    ${_HEADING1} " *** $${_dstdir}/${_file:T} is not readable ***"; \

@@ -58,11 +58,20 @@ _FW=	${_FACE_DIFF_WARN_ENTER}
 _FE=	${_FACE_DIFF_EXIT}
 
 .if exists(${AWK_CMD})
-_DIFF_POST=	${AWK_CMD} ' \
-	    (NR > 3) && /^\+/ { printf("${_FA}%s${_FE}\n", $$0) } \
-	    (NR > 3) && /^\-/ { printf("${_FD}%s${_FE}\n", $$0) } \
-	    (NR < 3) || (!/^\+/ && !/^\-/) { print } \
-	'
+_DIFF_POST= \
+	if ${IS_TERM}; then \
+		${AWK_CMD} ' \
+		    (NR > 3) && /^\+/ { printf("${_FA}%s${_FE}\n", $$0) } \
+		    (NR > 3) && /^\-/ { printf("${_FD}%s${_FE}\n", $$0) } \
+		    (NR < 3) || (!/^\+/ && !/^\-/) { print } \
+		'; \
+	else \
+		${AWK_CMD} ' \
+		    (NR > 3) && /^\+/ { printf("%s\n", $$0) } \
+		    (NR > 3) && /^\-/ { printf("%s\n", $$0) } \
+		    (NR < 3) || (!/^\+/ && !/^\-/) { print } \
+		'; \
+	fi
 .else
 _DIFF_POST=	${CAT_CMD}
 .endif

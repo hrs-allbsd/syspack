@@ -67,18 +67,32 @@ CONF?=		/usr/local/etc/bsd.config.mk.conf
 UID!=		${ID_U}
 SETENV?=	${ENV_CMD} -i PATH="${PATH}" TERM="${TERM}"
 #
+# Detect terminal
+#
+IS_TERM=	${TEST_CMD} -t 1
+#
 # Headings for progress reporting
 #
 .if !defined(_COLS) || empty(_COLS)
 _COLS=		80
 .endif
 _HEADING1=	heading() { \
-		  printf "${_FACE_REV}%-*s${_FACE_EXIT}\n" ${_COLS} \
+		  if ${IS_TERM}; then \
+		    printf "${_FACE_REV}%-*s${_FACE_EXIT}\n" ${_COLS} \
+		      "==> $$*"; \
+		  else \
+		    printf "%-*s\n" ${_COLS} \
 		     "==> $$*"; \
+		  fi; \
 		}; heading
 _HEADING1S=	heading() { \
-		  printf "${_FACE_REV}%-*s${_FACE_EXIT}\n" ${_COLS} \
-		     "    $$*"; \
+		  if ${IS_TERM}; then \
+		    printf "${_FACE_REV}%-*s${_FACE_EXIT}\n" ${_COLS} \
+		      "    $$*"; \
+		  else \
+		    printf "%-*s\n" ${_COLS} \
+		      "    $$*"; \
+		  fi; \
 		}; heading
 #
 # DESTDIR check
