@@ -1,19 +1,18 @@
 #
+LOCALBASE?=	/usr/local
 ID_U?=		/usr/xpg4/bin/id -u
 SETENV?=	/usr/bin/env
-DIFF_CMD?=	/usr/local/bin/gdiff
-SDIFF_CMD?=	/usr/local/bin/gsdiff
-SUDO_CMD?=	/usr/local/bin/sudo
+DIFF_CMD?=	${LOCALBASE}/bin/gdiff
+SDIFF_CMD?=	${LOCALBASE}/bin/gsdiff
 TEST_CMD?=	/usr/bin/test
 ENV_CMD?=	/usr/bin/env
 .if exists(/usr/bin/less)
 LESS_CMD?=	/usr/bin/less
-.elif exists(/usr/local/bin/less)
-LESS_CMD?=	/usr/local/bin/less
+.elif exists(${LOCALBASE}/bin/less)
+LESS_CMD?=	${LOCALBASE}/bin/less
 .endif
 GREP_CMD?=	/usr/bin/grep
 WC_CMD?=	/usr/bin/wc
-GIT_CMD?=	/usr/local/bin/git
 SED_CMD?=	/usr/bin/sed
 CAT_CMD?=	/bin/cat
 TPUT_CMD?=	/usr/bin/tput
@@ -22,10 +21,17 @@ CMP_CMD?=	/usr/bin/cmp
 FIND_CMD?=	/usr/bin/find
 HOSTNAME_CMD?=	/usr/xpg4/bin/id -n
 AWK_CMD?=	/usr/bin/awk
+TAIL_CMD?=	/usr/bin/tail
+TAILF_CMD?=	/usr/bin/tail -f
 
 # BSD stat
-GETPERM_CMD?=	/usr/local/bin/stat -f "%Mp%Lp"
-GETOWNER_CMD?=	/usr/local/bin/stat -f "%u:%g"
+GETPERM_CMD?=	${LOCALBASE}/bin/stat -f "%Mp%Lp"
+GETOWNER_CMD?=	${LOCALBASE}/bin/stat -f "%u:%g"
+
+GIT_CMD?=	${LOCALBASE}/bin/git
+SCREEN_CMD?=	${LOCALBASE}/bin/screen
+SUDO_CMD?=	${LOCALBASE}/bin/sudo
+DOAS_CMD?=	${LOCALBASE}/bin/doas
 
 #.if !exists(/usr/bsd/bin/install)
 #. error BSD-compatible install(1) is required

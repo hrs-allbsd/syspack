@@ -37,7 +37,7 @@ _DESTDIR_${_dir:hash}=${DESTDIR}${_dir}
 # static file
 #
 #
-# XXX: SUDO_CMD is expensive.  _exists is for caching the results.
+# XXX: SUEXEC_CMD is expensive.  _exists is for caching the results.
 #
 diff-${_tag}::
 	${_@_}\
@@ -81,7 +81,7 @@ diff-${_tag}::
 		fi; \
 	    fi; \
 	fi; \
-	_exists=$$(${SUDO_CMD} ${SH_CMD} -c \
+	_exists=$$(${SUEXEC_CMD} ${SH_CMD} -c \
 	    "if [ -e $${_dstdir}/${_file:T} -a \
 	    -r $${_dstdir}/${_file:T} ]; then \
 	      if ${CMP_CMD} $${_dstdir}/${_file:T} $${_src}; then \
@@ -98,10 +98,10 @@ diff-${_tag}::
 	    if ${IS_TERM}; then \
 		_label0="${_FD}$${_label0}${_FE}"; \
 	    fi; \
-	    ${SUDO_CMD} ${CAT_CMD} $${_dstdir}/${_file:T} | ${_DIFF_CMD} \
+	    ${SUEXEC_CMD} ${CAT_CMD} $${_dstdir}/${_file:T} | ${_DIFF_CMD} \
 	      -L "$${_label0}" - \
 	      -L "$${_label}" $${_src} | ${_DIFF_POST} || :; \
-	elif ${SUDO_CMD} ${TEST_CMD} ! -e $${_dstdir}/${_file:T}; then \
+	elif ${SUEXEC_CMD} ${TEST_CMD} ! -e $${_dstdir}/${_file:T}; then \
 	    ${_HEADING1} "diff $${_dstdir}/${_file:T} ${_file:T}:"; \
 	    _label0="$${_dstdir}/${_file:T}"; \
 	    if ${IS_TERM}; then \
@@ -112,7 +112,7 @@ diff-${_tag}::
 	    ${_DIFF_CMD} \
 	      -L "$${_label0}" /dev/null \
 	      -L "$${_label}" $${_src} | ${_DIFF_POST} || :; \
-	elif ${SUDO_CMD} ${TEST_CMD} ! -r $${_dstdir}/${_file:T}; then \
+	elif ${SUEXEC_CMD} ${TEST_CMD} ! -r $${_dstdir}/${_file:T}; then \
 	    ${_HEADING1} " *** $${_dstdir}/${_file:T} is not readable ***"; \
 	fi
 . else # !target(${_file:T})
@@ -164,7 +164,7 @@ diff-${_tag}:: ${_file:T}
 	      _label="${_FA}$${_label}${_FE}"; \
 	    fi; \
 	fi; \
-	_exists=$$(${SUDO_CMD} ${SH_CMD} -c \
+	_exists=$$(${SUEXEC_CMD} ${SH_CMD} -c \
 	    "if [ -e $${_dstdir}/${_file:T} -a \
 	    -r $${_dstdir}/${_file:T} ]; then \
 	      if ${CMP_CMD} $${_dstdir}/${_file:T} $${_src}; then \
@@ -179,10 +179,10 @@ diff-${_tag}:: ${_file:T}
 	      _label0="${_FD}$${_label0}${_FE}"; \
 	    fi; \
 	    ${_HEADING1} "diff $${_dstdir}/${_file:T} ${_file:T}:"; \
-	    ${SUDO_CMD} ${CAT_CMD} $${_dstdir}/${_file:T} | ${_DIFF_CMD} \
+	    ${SUEXEC_CMD} ${CAT_CMD} $${_dstdir}/${_file:T} | ${_DIFF_CMD} \
 	      -L "$${_label0}" - \
 	      -L "$${_label}" $${_src} | ${_DIFF_POST} || :; \
-	elif ${SUDO_CMD} ${TEST_CMD} ! -e $${_dstdir}/${_file:T}; then \
+	elif ${SUEXEC_CMD} ${TEST_CMD} ! -e $${_dstdir}/${_file:T}; then \
 	    _label0="$${_dstdir}/${_file:T}"; \
 	    if ${IS_TERM}; then \
 	      _label0="${_FD}$${_label0} ${_FLW}(*** missing ***)${_FE}"; \
@@ -193,7 +193,7 @@ diff-${_tag}:: ${_file:T}
 	    ${_DIFF_CMD} \
 	      -L "$${_label0}" /dev/null \
 	      -L "$${_label}" $${_src} | ${_DIFF_POST} || :; \
-	elif ${SUDO_CMD} ${TEST_CMD} ! -r $${_dstdir}/${_file:T}; then \
+	elif ${SUEXEC_CMD} ${TEST_CMD} ! -r $${_dstdir}/${_file:T}; then \
 	    ${_HEADING1} " *** $${_dstdir}/${_file:T} is not readable ***"; \
 	fi
 .  endif # defined(STOREDCMD_${_file:T})

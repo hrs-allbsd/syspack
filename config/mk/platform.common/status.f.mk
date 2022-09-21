@@ -80,7 +80,7 @@ status-${_tag}:: ${_file:T}
 		_dinfo="$${_dinfo}($$_ug should be $$_UG)"; \
 		${DEBUG_ECHO} "$$_ug != $$_UG";\
 	fi; \
-	if ! ${SUDO_CMD} ${_DIFF_CMD} $${_dstdir}/${_file:T} ${_file} \
+	if ! ${SUEXEC_CMD} ${_DIFF_CMD} $${_dstdir}/${_file:T} ${_file} \
 	    > /dev/null 2>&1; then \
 		_dtag=$${_dtag}C; \
 	fi; \

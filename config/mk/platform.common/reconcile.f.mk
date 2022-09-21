@@ -45,13 +45,13 @@ reconcile-${_file:T}.DESC= \
 	Merge changes in ${DESTDIR}${_dir}/${_file:T} into ${_file:T}
 TARGETS.reconcile+=	reconcile-${_file:T}
 reconcile-${_tag}::
-	@if ! ${SUDO_CMD} ${TEST_CMD} -r "${DESTDIR}${_dir}/${_file:T}"; then \
+	@if ! ${SUEXEC_CMD} ${TEST_CMD} -r "${DESTDIR}${_dir}/${_file:T}"; then \
 		if [ -f ${_file} ]; then \
 			echo "==> ${_file}: Skipped because of no ${DESTDIR}${_dir}/${_file:T}."; \
 		else \
 			echo "==> ${_file}: not found."; \
 		fi; \
-	elif ! ${SUDO_CMD} ${_DIFF_CMD} ${DESTDIR}${_dir}/${_file:T} ${_file} > /dev/null 2>&1; then \
+	elif ! ${SUEXEC_CMD} ${_DIFF_CMD} ${DESTDIR}${_dir}/${_file:T} ${_file} > /dev/null 2>&1; then \
 	echo "==> reconcile ${DESTDIR}${_dir}/${_file:T} --> ${_file}"; \
 	TMPDIR="${TMPDIR}/$$$$"; \
 	RECONCILE_AGAIN=yes; \
@@ -59,7 +59,7 @@ reconcile-${_tag}::
 		mkdir -p "$${TMPDIR}/${DESTDIR}${_dir}"; \
 		_TMPFILE="$${TMPDIR}/${DESTDIR}${_dir}/${_file:T}.reconciled"; \
 		_TMPFILE_T="$${TMPDIR}/${DESTDIR}${_dir}/${_file:T}.target"; \
-		${SUDO_CMD} cat ${DESTDIR}${_dir}/${_file:T} > "$${_TMPFILE_T}"; \
+		${SUEXEC_CMD} cat ${DESTDIR}${_dir}/${_file:T} > "$${_TMPFILE_T}"; \
 		${_RECONCILE_CMD} -o "$${_TMPFILE}" \
 		    "$${_TMPFILE_T}" ${_file} || :; \
 		INSTALL_RECONCILED=V; \

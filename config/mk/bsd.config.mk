@@ -63,6 +63,16 @@ _PLATFORM=	${UNAME_s:tl}
 .endif
 .include "${CONFBASE}/platform.common/platform.mk"
 #
+# command check
+#
+.if exists(${SUDO_CMD})
+SUEXEC_CMD?=	${SUDO_CMD}
+.elif exists(${DOAS_CMD})
+SUEXEC_CMD?=	${DOAS_CMD}
+.else
+. error ${SPX_ERROR} install sudo(1) or doas(1) 
+.endif
+#
 CONF?=		/usr/local/etc/bsd.config.mk.conf
 UID!=		${ID_U}
 SETENV?=	${ENV_CMD} -i PATH="${PATH}" TERM="${TERM}"
@@ -254,10 +264,6 @@ CLEANDIRS+=	${_PKGBASEDIR}
 
 # Normalize //+ and trailing / in DESTDIR.
 DESTDIR:=	${DESTDIR:C,//+,/,g:C,/$,,}
-
-.if !exists(${SUDO_CMD})
-.error ${SUDO_CMD}: not found.  config.mk depends on sudo(1).
-.endif
 
 # XXX:
 #
@@ -491,7 +497,7 @@ DESTDIR:=	${DESTDIR:C,[/]+,/,g}
 #  sudo(1) for per-file installation to #  avoid this issue.
 #
 .if defined(INSTALL_AS_ROOT)
-INSTALL:=	${SUDO_CMD} ${INSTALL}
+INSTALL:=	${SUEXEC_CMD} ${INSTALL}
 .endif
 #
 # Helper vars

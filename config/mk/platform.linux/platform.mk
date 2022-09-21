@@ -3,11 +3,9 @@ ID_U?=		/usr/bin/id -u
 SETENV?=	/usr/bin/env
 DIFF_CMD?=	/usr/bin/diff
 SDIFF_CMD?=	/usr/bin/sdiff
-SUDO_CMD?=	/usr/bin/sudo
 TEST_CMD?=	/usr/bin/test
 ENV_CMD?=	/usr/bin/env
 LESS_CMD?=	/usr/bin/less
-GIT_CMD?=	/usr/bin/git
 GREP_CMD?=	/usr/bin/grep
 WC_CMD?=	/usr/bin/wc
 SED_CMD?=	/usr/bin/sed
@@ -18,10 +16,17 @@ CMP_CMD?=	/usr/bin/cmp
 FIND_CMD?=	/usr/bin/find
 HOSTNAME_CMD?=	/bin/hostname
 AWK_CMD?=	/usr/bin/awk
+TAIL_CMD?=	/usr/bin/tail
+TAILF_CMD?=	/usr/bin/tail -f
 
 # GNU stat
 GETPERM_CMD?=	/usr/bin/stat --printf "%a"
 GETOWNER_CMD?=	/usr/bin/stat --printf "%u:%g"
+
+SUDO_CMD?=	/usr/bin/sudo
+DOAS_CMD?=	/usr/bin/doas
+GIT_CMD?=	/usr/bin/git
+SCREEN_CMD?=	/usr/bin/screen
 
 # FIXME
 .if !defined(NCPU) && empty(NCPU)

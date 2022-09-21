@@ -34,8 +34,8 @@ __<backup.g.mk>__:
 . for _file in ${${_group}BACKUP}
 ${_file:T}: ${_dir}/${_file:T}
 	@echo "==> Create a backup of ${_file:T} from ${_dir}/${_file:T}"
-	${SUDO_CMD} install -o ${UID} -m 0600 ${.ALLSRC} ${.CURDIR}/${_file:T} && \
-	    ${SUDO_CMD} touch -r ${_dir}/${_file} ${.CURDIR}/${_file:T}
+	${SUEXEC_CMD} install -o ${UID} -m 0600 ${.ALLSRC} ${.CURDIR}/${_file:T} && \
+	    ${SUEXEC_CMD} touch -r ${_dir}/${_file} ${.CURDIR}/${_file:T}
 CLEANFILES+=	${_file:T}
 backup: ${_file:T}
 . endfor

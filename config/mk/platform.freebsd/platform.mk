@@ -1,4 +1,5 @@
 #
+LOCALBASE?=	/usr/local
 ID_U?=		/usr/bin/id -u
 SETENV?=	/usr/bin/env
 DIFF_CMD?=	/usr/bin/diff
@@ -16,9 +17,13 @@ CMP_CMD?=	/usr/bin/cmp -hsz
 FIND_CMD?=	/usr/bin/find
 HOSTNAME_CMD?=	/bin/hostname
 AWK_CMD?=	/usr/bin/awk
+TAIL_CMD?=	/usr/bin/tail
+TAILF_CMD?=	/usr/bin/tail -F
 
-SUDO_CMD?=	/usr/local/bin/sudo
-GIT_CMD?=	/usr/local/bin/git
+SUDO_CMD?=	${LOCALBASE}/bin/sudo
+DOAS_CMD?=	${LOCALBASE}/bin/doas
+GIT_CMD?=	${LOCALBASE}/bin/git
+SCREEN_CMD?=	${LOCALBASE}/bin/screen
 
 # BSD stat
 GETPERM_CMD?=	/usr/bin/stat -f "%Mp%Lp"
