@@ -42,7 +42,7 @@ services:
 	@echo "services (plugin):" "(not defined)"
 .endif
 
-SERVICE_CMD?=	${SUDO_CMD} /usr/sbin/service
+SERVICE_CMD?=	${SUEXEC_CMD} /usr/sbin/service
 .if defined(JAIL) && !empty(JAIL)
 _JAIL_IS_DOWN!=	jls -j ${JAIL} >/dev/null 2>&1 || echo YES
 SERVICE?=	${SERVICE_CMD} -j ${JAIL}
@@ -64,7 +64,20 @@ ${S}-${A}:
 	@${_HEADING1} "${S}: ${A} (ignored because ${JAIL} is down)"
 .  else
 	@${_HEADING1} "${S}: ${A}"
+# XXXHRS defined(A:Mstart) does not work
+.   if (${A} == "start" || ${A} == "reload" || ${A} == "restart") && \
+       !empty(LOGFILE.${S})
+	if ${SERVICE} ${S} ${A}; then \
+		set -- $$(${SERVICE} ${S} status); \
+		_pid=$$6; \
+		case "$${_pid}" in \
+		[1-9][0-9]*) _pid="(pid=$${_pid%.})" ;; \
+		esac; \
+		${_LOGTAIL_CMD} "${S}$${_pid}: ${A}" ${LOGFILE.${S}}; \
+	fi
+.   else
 	-@${SERVICE} ${S} ${A}
+.   endif
 .  endif
 ${A}: ${S}-${A}
 # alias: status = st

@@ -100,3 +100,25 @@ _LOG_TOTALLINES=	_lines() { \
 	    grep -v total 2> /dev/null | \
 	    ${_AVG}; \
 	}; _lines
+#
+# _LOGTAIL_CMD: Command to show the log file
+# $0: header
+# $1: log file pathname
+#
+_LOGTAIL_CMD= \
+	if [ -n "$${STY}" ]; then \
+	logtail() { \
+	${SCREEN_CMD} -X screen -dm -t "$$1" ${SH_CMD} -c ' \
+	    ${_HEADING1} "\$$0 (\$$1) [Ctrl-C to close]"; \
+	    ${TAILF_CMD} \$$1; \
+	' "$$@"; \
+	}; \
+	else \
+	logtail() { \
+	${SCREEN_CMD} -m -t "\$$1" ${SH_CMD} -c ' \
+	    ${_HEADING1} "\$$0 (\$$1) [Ctrl-C to close]"; \
+	    ${TAILF_CMD} \$$1; \
+	' "$$@"; \
+	}; \
+	fi; \
+	logtail
