@@ -1,6 +1,7 @@
 #
 LOCALBASE?=	/usr/local
 ID_U?=		/usr/bin/id -u
+ID_UN?=		/usr/bin/id -un
 SETENV?=	/usr/bin/env
 DIFF_CMD?=	/usr/bin/diff
 SDIFF_CMD?=	/usr/bin/sdiff

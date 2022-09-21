@@ -105,20 +105,37 @@ _LOG_TOTALLINES=	_lines() { \
 # $0: header
 # $1: log file pathname
 #
+_SCREEN_CMD=${_USER_CMD} ${SCREEN_CMD}
+#
+# FIXME: 2022.9.22 by hrs:
+#   The "screen -X screen" requires more escaping of the shell commands.
+#   It is confusing.  And "sudo make start" in a screen shows
+#   an extra hardstatus line ($h).
+#
 _LOGTAIL_CMD= \
 	if [ -n "$${STY}" ]; then \
 	logtail() { \
-	${SCREEN_CMD} -X screen -dm -t "$$1" ${SH_CMD} -c ' \
-	    ${_HEADING1} "\$$0 (\$$1) [Ctrl-C to close]"; \
-	    ${TAILF_CMD} \$$1; \
-	' "$$@"; \
+	  ${_SCREEN_CMD} -X screen -dm -t "$$1" ${SH_CMD} -c ' \
+	    h="\$$0 (\$$1) [Ctrl-C to close]"; \
+	    ${_HEADING1} "\$$h"; \
+	    printf "${ESC_TITLE_ENTER}\$$h${ESC_TITLE_EXIT}"; \
+	    ${TAILF_CMD} "\$$1"; \
+	  ' "$$@"; \
 	}; \
 	else \
 	logtail() { \
-	${SCREEN_CMD} -m -t "\$$1" ${SH_CMD} -c ' \
-	    ${_HEADING1} "\$$0 (\$$1) [Ctrl-C to close]"; \
-	    ${TAILF_CMD} \$$1; \
-	' "$$@"; \
+	  ${_SCREEN_CMD} -m -t "$$1" ${SH_CMD} -c ' \
+	    h="$$0 ($$1) [Ctrl-C to close]"; \
+	    ${_HEADING1} "$$h"; \
+	    printf "${ESC_TITLE_ENTER}$$h${ESC_TITLE_EXIT}"; \
+	    ${TAILF_CMD} "$$1"; \
+	  ' "$$@"; \
 	}; \
 	fi; \
 	logtail
+_LOGTAIL_POSTCMD= \
+        logtail_post() { \
+	if [ -n "$${STY}" ]; then \
+		${_SCREEN_CMD} -X title "$$1"; \
+	fi; \
+        }; logtail_post

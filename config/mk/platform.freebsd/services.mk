@@ -65,15 +65,17 @@ ${S}-${A}:
 .  else
 	@${_HEADING1} "${S}: ${A}"
 # XXXHRS defined(A:Mstart) does not work
-.   if (${A} == "start" || ${A} == "reload" || ${A} == "restart") && \
+.   if ${SERVICES:[#]} == 1 && \
+       (${A} == "start" || ${A} == "reload" || ${A} == "restart") && \
        !empty(LOGFILE.${S})
-	if ${SERVICE} ${S} ${A}; then \
+	@if ${SERVICE} ${S} ${A}; then \
 		set -- $$(${SERVICE} ${S} status); \
 		_pid=$$6; \
 		case "$${_pid}" in \
 		[1-9][0-9]*) _pid="(pid=$${_pid%.})" ;; \
 		esac; \
 		${_LOGTAIL_CMD} "${S}$${_pid}: ${A}" ${LOGFILE.${S}}; \
+		${_LOGTAIL_POSTCMD} "${S}$${_pid}"; \
 	fi
 .   else
 	-@${SERVICE} ${S} ${A}

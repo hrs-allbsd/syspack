@@ -63,23 +63,41 @@ _PLATFORM=	${UNAME_s:tl}
 .endif
 .include "${CONFBASE}/platform.common/platform.mk"
 #
-# command check
 #
-.if exists(${SUDO_CMD})
-SUEXEC_CMD?=	${SUDO_CMD}
-.elif exists(${DOAS_CMD})
-SUEXEC_CMD?=	${DOAS_CMD}
-.else
-. error ${SPX_ERROR} install sudo(1) or doas(1) 
-.endif
 #
 CONF?=		/usr/local/etc/bsd.config.mk.conf
 UID!=		${ID_U}
 SETENV?=	${ENV_CMD} -i PATH="${PATH}" TERM="${TERM}"
 #
+#
+# command check
+#
+# sudo(8) or doas(1)
+# FIXME: redundant conditionals
+.if empty(UID:M0) && exists(${SUDO_CMD})
+SUEXEC_CMD?=	${SUDO_CMD}
+# 2022.9.22: not enabled yet because not sure if this is useful
+# _USER_CMD=	${SUDO_CMD} -u $$(${ID_UN} ${UID}) STY=$${STY} --
+.elif !empty(UID:M0) && exists(${SUDO_CMD})
+SUEXEC_CMD?=	${SUDO_CMD}
+_USER_CMD=	${SUDO_CMD} -u $${SUDO_USER} --
+.elif empty(UID:M0) && exists(${DOAS_CMD})
+SUEXEC_CMD?=	${DOAS_CMD}
+# 2022.9.22: not enabled yet because not sure if this is useful
+# _USER_CMD=	${DOAS_CMD} -u $$(${ID_UN} ${UID}) STY=$${STY} --
+.elif !empty(UID:M0) && exists(${DOAS_CMD})
+SUEXEC_CMD?=	${SUDO_CMD}
+_USER_CMD=	${DOAS_CMD} -u $${DOAS_USER} --
+.else
+. error ${SPX_ERROR} install sudo(8) or doas(1) 
+.endif
+#
 # Detect terminal
 #
 IS_TERM=	${TEST_CMD} -t 1
+ESC_OSC=
+ESC_TITLE_ENTER=${ESC_OSC}]2;
+ESC_TITLE_EXIT=
 #
 # Headings for progress reporting
 #

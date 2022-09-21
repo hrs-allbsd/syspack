@@ -1,6 +1,7 @@
 #
 LOCALBASE?=	/usr/local
 ID_U?=		/usr/xpg4/bin/id -u
+ID_UN?=		/usr/xpg4/bin/id -un
 SETENV?=	/usr/bin/env
 DIFF_CMD?=	${LOCALBASE}/bin/gdiff
 SDIFF_CMD?=	${LOCALBASE}/bin/gsdiff
