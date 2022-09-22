@@ -71,9 +71,10 @@ SETENV?=	${ENV_CMD} -i PATH="${PATH}" TERM="${TERM}"
 #
 #
 # command check
+# FIXME: redundant conditionals
 #
 # sudo(8) or doas(1)
-# FIXME: redundant conditionals
+#
 .if empty(UID:M0) && exists(${SUDO_CMD})
 SUEXEC_CMD?=	${SUDO_CMD}
 # 2022.9.22: not enabled yet because not sure if this is useful
@@ -90,6 +91,47 @@ SUEXEC_CMD?=	${SUDO_CMD}
 _USER_CMD=	${DOAS_CMD} -u $${DOAS_USER} --
 .else
 . error ${SPX_ERROR} install sudo(8) or doas(1) 
+.endif
+#
+# screen(1) or tmux(1), optional
+#
+.if defined(STY) && exists(${SCREEN_CMD})
+_WIN_TYPE=	screen
+.elif defined(TMUX) && exists(${TMUX_CMD})
+_WIN_TYPE=	tmux
+.elif defined(PREFER_SCREEN) && exists(${SCREEN_CMD})
+_WIN_TYPE=	screen
+.elif defined(PREFER_TMUX) && exists(${TMUX_CMD})
+_WIN_TYPE=	tmux
+.elif exists(${SCREEN_CMD})
+_WIN_TYPE=	screen
+.elif exists(${TMUX_CMD})
+_WIN_TYPE=	tmux
+.endif
+#
+.if defined(_WIN_TYPE) && !empty(_WIN_TYPE:Mscreen)
+IS_WIN=		${TEST_CMD} -n "$${STY}"
+_WIN_CMD?=	${_USER_CMD} ${SCREEN_CMD}
+_WIN_NEW_CMD?= ${_WIN_CMD} -m -t
+_WIN_NEW_CMD_EVAL=	false
+_WIN_ADD_CMD?= ${_WIN_CMD} -X screen -dm -t
+_WIN_ADD_CMD_EVAL=	:
+_WIN_TITLE_CMD?= ${_WIN_CMD} -X title
+.elif defined(_WIN_TYPE) && !empty(_WIN_TYPE:Mtmux)
+IS_WIN=		${TEST_CMD} -n "$${TMUX}"
+_WIN_CMD?=	${_USER_CMD} ${TMUX_CMD}
+_WIN_NEW_CMD?= ${_WIN_CMD} new-session -n
+_WIN_NEW_CMD_EVAL=	false
+_WIN_ADD_CMD?= ${_WIN_CMD} new-window -n
+_WIN_ADD_CMD_EVAL=	false
+_WIN_TITLE_CMD?= ${_WIN_CMD} set-option set-titles-string
+.else
+IS_WIN=		:
+_WIN_CMD=	:
+_WIN_ADD_CMD=	:
+_WIN_ADD_CMD_EVAL=:
+_WIN_NEW_CMD=	:
+_WIN_NEW_CMD_EVAL=:
 .endif
 #
 # Detect terminal

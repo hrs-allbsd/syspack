@@ -25,6 +25,7 @@ SUDO_CMD?=	${LOCALBASE}/bin/sudo
 DOAS_CMD?=	${LOCALBASE}/bin/doas
 GIT_CMD?=	${LOCALBASE}/bin/git
 SCREEN_CMD?=	${LOCALBASE}/bin/screen
+TMUX_CMD?=	${LOCALBASE}/bin/tmux
 
 # BSD stat
 GETPERM_CMD?=	/usr/bin/stat -f "%Mp%Lp"

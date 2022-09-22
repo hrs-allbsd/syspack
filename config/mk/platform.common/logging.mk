@@ -33,8 +33,9 @@ __<logging.mk>__:
 # XXX: not yet
 #TARGETS.logging=	log
 #log.DESC=	show pathnames of the log files
-VARS.logging=		LOGDIR
-
+VARS.logging=		LOGDIR \
+			PREFER_SCREEN \
+			PREFER_TMUX
 #
 #
 #
@@ -105,27 +106,33 @@ _LOG_TOTALLINES=	_lines() { \
 # $0: header
 # $1: log file pathname
 #
-_SCREEN_CMD=${_USER_CMD} ${SCREEN_CMD}
-#
-# FIXME: 2022.9.22 by hrs:
-#   The "screen -X screen" requires more escaping of the shell commands.
-#   It is confusing.  And "sudo make start" in a screen shows
-#   an extra hardstatus line ($h).
+# NOTE: _WIN_*_CMD_EVAL is a flag that the command line is evaluated
+# before it runs.  "screen -X screen sh -c foo" evaluates "foo" twice,
+# "screen -m sh -c foo" evaluates # "foo" once.
 #
 _LOGTAIL_CMD= \
-	if [ -n "$${STY}" ]; then \
+	if ${IS_WIN} && ${_WIN_ADD_CMD_EVAL}; then \
 	logtail() { \
-	  ${_SCREEN_CMD} -X screen -dm -t "$$1" ${SH_CMD} -c ' \
-	    h="\$$0 (\$$1) [Ctrl-C to close]"; \
+	  ${_WIN_ADD_CMD} "$$1" ${SH_CMD} -c ' \
+	    h="\$$0(\$$1) [Ctrl-C to close]"; \
 	    ${_HEADING1} "\$$h"; \
 	    printf "${ESC_TITLE_ENTER}\$$h${ESC_TITLE_EXIT}"; \
 	    ${TAILF_CMD} "\$$1"; \
 	  ' "$$@"; \
 	}; \
+	elif ${IS_WIN}; then \
+	logtail() { \
+	  ${_WIN_ADD_CMD} "$$1" ${SH_CMD} -c ' \
+	    h="$$0($$1) [Ctrl-C to close]"; \
+	    ${_HEADING1} "$$h"; \
+	    printf "${ESC_TITLE_ENTER}$$h${ESC_TITLE_EXIT}"; \
+	    ${TAILF_CMD} "$$1"; \
+	  ' "$$@"; \
+	}; \
 	else \
 	logtail() { \
-	  ${_SCREEN_CMD} -m -t "$$1" ${SH_CMD} -c ' \
-	    h="$$0 ($$1) [Ctrl-C to close]"; \
+	  ${_WIN_NEW_CMD} "$$1" ${SH_CMD} -c ' \
+	    h="$$0($$1) [Ctrl-C to close]"; \
 	    ${_HEADING1} "$$h"; \
 	    printf "${ESC_TITLE_ENTER}$$h${ESC_TITLE_EXIT}"; \
 	    ${TAILF_CMD} "$$1"; \
@@ -135,7 +142,7 @@ _LOGTAIL_CMD= \
 	logtail
 _LOGTAIL_POSTCMD= \
         logtail_post() { \
-	if [ -n "$${STY}" ]; then \
-		${_SCREEN_CMD} -X title "$$1"; \
+	if ${IS_WIN}; then \
+		${_WIN_TITLE_CMD} "$$1"; \
 	fi; \
         }; logtail_post

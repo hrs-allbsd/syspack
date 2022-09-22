@@ -56,7 +56,7 @@ SERVICE?=	${SERVICE_CMD}
 . if defined(EXTRACOMMANDS.${S})
 VARS.services+=	EXTRACOMMANDS.${S}
 . endif
-. for A in start stop restart reload status \
+. for A in start stop restart reload status log \
     ${EXTRACOMMANDS} ${EXTRACOMMANDS.${S}}
 TARGETS.services+=	${S}-${A}
 ${S}-${A}:
@@ -64,18 +64,36 @@ ${S}-${A}:
 	@${_HEADING1} "${S}: ${A} (ignored because ${JAIL} is down)"
 .  else
 	@${_HEADING1} "${S}: ${A}"
-# XXXHRS defined(A:Mstart) does not work
-.   if ${SERVICES:[#]} == 1 && \
-       (${A} == "start" || ${A} == "reload" || ${A} == "restart") && \
-       !empty(LOGFILE.${S})
+#
+# Run _LOGTAIL_CMD only when
+# 1) ${S}-${A} target is specified, or
+# 2) ${A} target is specified and only one ${SERVICES} is defined.
+#
+# XXXHRS do not forget that defined(A:Mstart) does not work
+.   if !empty(LOGFILE.${S}) && \
+       (make(${S}-log) || (make(log) && ${SERVICES:[#]} == 1))
+		if ${IS_TERM}; then \
+			set -- $$(${SERVICE} ${S} status); \
+			_pid=$$6; \
+			case "$${_pid}" in \
+			[1-9][0-9]*) _pid="/pid=$${_pid%.}" ;; \
+			*) _pid="/not running" ;; \
+			esac; \
+			${_LOGTAIL_CMD} "${S}$${_pid}" ${LOGFILE.${S}}; \
+			${_LOGTAIL_POSTCMD} "${S}$${_pid}"; \
+		fi
+.   elif !empty(LOGFILE.${S}) && \
+         (make(${S}-log) || make(log))
+.   error ${SPX_ERROR} "make log" works only when $$SERVICES \
+          has a single service name
+.   elif empty(LOGFILE.${S}) && \
+         (make(${S}-log) || make(log))
+.   error ${SPX_ERROR} "make ${S}-log" requires $$LOGFILE.${S}
+.   elif !empty(LOGFILE.${S}) && \
+       (make(${S}-${A}) || (make(${A}) && ${SERVICES:[#]} == 1)) && \
+       (${A} == "start" || ${A} == "reload" || ${A} == "restart")
 	@if ${SERVICE} ${S} ${A}; then \
-		set -- $$(${SERVICE} ${S} status); \
-		_pid=$$6; \
-		case "$${_pid}" in \
-		[1-9][0-9]*) _pid="(pid=$${_pid%.})" ;; \
-		esac; \
-		${_LOGTAIL_CMD} "${S}$${_pid}: ${A}" ${LOGFILE.${S}}; \
-		${_LOGTAIL_POSTCMD} "${S}$${_pid}"; \
+		${MAKE} ${.MAKEFLAGS} ${S}-log; \
 	fi
 .   else
 	-@${SERVICE} ${S} ${A}

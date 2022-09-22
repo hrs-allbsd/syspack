@@ -30,9 +30,10 @@ GETPERM_CMD?=	${LOCALBASE}/bin/stat -f "%Mp%Lp"
 GETOWNER_CMD?=	${LOCALBASE}/bin/stat -f "%u:%g"
 
 GIT_CMD?=	${LOCALBASE}/bin/git
-SCREEN_CMD?=	${LOCALBASE}/bin/screen
 SUDO_CMD?=	${LOCALBASE}/bin/sudo
 DOAS_CMD?=	${LOCALBASE}/bin/doas
+SCREEN_CMD?=	${LOCALBASE}/bin/screen
+TMUX_CMD?=	${LOCALBASE}/bin/tmux
 
 #.if !exists(/usr/bsd/bin/install)
 #. error BSD-compatible install(1) is required

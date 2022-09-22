@@ -28,6 +28,7 @@ SUDO_CMD?=	/usr/bin/sudo
 DOAS_CMD?=	/usr/bin/doas
 GIT_CMD?=	/usr/bin/git
 SCREEN_CMD?=	/usr/bin/screen
+TMUX_CMD?=	/usr/bin/tmux
 
 # FIXME
 .if !defined(NCPU) && empty(NCPU)
