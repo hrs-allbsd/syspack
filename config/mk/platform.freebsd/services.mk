@@ -82,16 +82,16 @@ ${S}-${A}:
 # XXXHRS do not forget that defined(A:Mstart) does not work
 .   if !empty(_LOGFILE.${S}) && \
        (make(${S}-log) || (make(log) && ${SERVICES:[#]} == 1))
-		if ${IS_TERM}; then \
-			set -- $$(${SERVICE} ${S} status); \
-			_pid=$$6; \
-			case "$${_pid}" in \
-			[1-9][0-9]*) _pid="/pid=$${_pid%.}" ;; \
-			*) _pid="/not running" ;; \
-			esac; \
-			${_LOGTAIL_CMD} "${S}$${_pid}" ${_LOGFILE.${S}}; \
-			${_LOGTAIL_POSTCMD} "${S}$${_pid}"; \
-		fi
+	@if ${IS_TERM}; then \
+		set -- $$(${SERVICE} ${S} status); \
+		_pid=$$6; \
+		case "$${_pid}" in \
+		[1-9][0-9]*) _pid="/pid=$${_pid%.}" ;; \
+		*) _pid="/not running" ;; \
+		esac; \
+		${_LOGTAIL_CMD} "${S}$${_pid}" ${_LOGFILE.${S}}; \
+		${_LOGTAIL_POSTCMD} "${S}$${_pid}"; \
+	fi
 .   elif !empty(_LOGFILE.${S}) && \
          (make(${S}-log) || make(log))
 .   error ${SPX_ERROR} "make log" works only when $$SERVICES \
