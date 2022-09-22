@@ -34,13 +34,14 @@ __<logging.mk>__:
 #TARGETS.logging=	log
 #log.DESC=	show pathnames of the log files
 VARS.logging=		LOGDIR \
+			VARLOGDIR \
 			PREFER_SCREEN \
 			PREFER_TMUX
 #
 #
 #
 LOGDIR?=${GLOBALBASE}/.spx/log
-
+VARLOGDIR?=	/var/log
 #
 # Helpers
 #

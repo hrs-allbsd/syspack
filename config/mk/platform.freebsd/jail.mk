@@ -36,6 +36,9 @@ JAIL_BASE?=		/j
 JEXEC_CMD?=	jexec
 JEXEC?=		${JEXEC_CMD} ${JAIL}
 JAIL_DESTDIR=	${JAIL_BASE}/${JAIL}
+JAIL_VARLOGDIR=	/var/log/${JAIL}
+# override logging plugin
+VARLOGDIR:=	${JAIL_VARLOGDIR}
 JAIL_CONSOLE_CMD?=	${JEXEC}
 
 TARGETS.jail=	console

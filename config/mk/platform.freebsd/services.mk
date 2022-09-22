@@ -56,6 +56,16 @@ SERVICE?=	${SERVICE_CMD}
 . if defined(EXTRACOMMANDS.${S})
 VARS.services+=	EXTRACOMMANDS.${S}
 . endif
+#
+# normalize a relative path using VARLOG
+#
+. if defined(LOGFILE.${S}) && !empty(LOGFILE.${S}:M/*)
+_LOGFILE.${S}=	${LOGFILE.${S}}
+. elif defined(LOGFILE.${S})
+_LOGFILE.${S}=	${VARLOGDIR}/${LOGFILE.${S}}
+. endif
+#
+#
 . for A in start stop restart reload status log \
     ${EXTRACOMMANDS} ${EXTRACOMMANDS.${S}}
 TARGETS.services+=	${S}-${A}
@@ -70,7 +80,7 @@ ${S}-${A}:
 # 2) ${A} target is specified and only one ${SERVICES} is defined.
 #
 # XXXHRS do not forget that defined(A:Mstart) does not work
-.   if !empty(LOGFILE.${S}) && \
+.   if !empty(_LOGFILE.${S}) && \
        (make(${S}-log) || (make(log) && ${SERVICES:[#]} == 1))
 		if ${IS_TERM}; then \
 			set -- $$(${SERVICE} ${S} status); \
@@ -79,17 +89,17 @@ ${S}-${A}:
 			[1-9][0-9]*) _pid="/pid=$${_pid%.}" ;; \
 			*) _pid="/not running" ;; \
 			esac; \
-			${_LOGTAIL_CMD} "${S}$${_pid}" ${LOGFILE.${S}}; \
+			${_LOGTAIL_CMD} "${S}$${_pid}" ${_LOGFILE.${S}}; \
 			${_LOGTAIL_POSTCMD} "${S}$${_pid}"; \
 		fi
-.   elif !empty(LOGFILE.${S}) && \
+.   elif !empty(_LOGFILE.${S}) && \
          (make(${S}-log) || make(log))
 .   error ${SPX_ERROR} "make log" works only when $$SERVICES \
           has a single service name
-.   elif empty(LOGFILE.${S}) && \
+.   elif empty(_LOGFILE.${S}) && \
          (make(${S}-log) || make(log))
 .   error ${SPX_ERROR} "make ${S}-log" requires $$LOGFILE.${S}
-.   elif !empty(LOGFILE.${S}) && \
+.   elif !empty(_LOGFILE.${S}) && \
        (make(${S}-${A}) || (make(${A}) && ${SERVICES:[#]} == 1)) && \
        (${A} == "start" || ${A} == "reload" || ${A} == "restart")
 	@if ${SERVICE} ${S} ${A}; then \
