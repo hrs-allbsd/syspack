@@ -5,8 +5,8 @@
 # spx [subcommand]
 #
 : ${LOCALBASE:=/usr/local}
-: ${SPX_LIBEXECDIR:="${LOCALBASE}/libexec/spx"}
-: ${SPX_MODULESDIR:="${SPX_LIBEXECDIR}/modules"}
+: ${SPX_LIBEXECDIR:=${LOCALBASE}/libexec/spx}
+: ${SPX_MODULESDIR:=${SPX_LIBEXECDIR}/modules}
 : ${SPX_SHELL:="/bin/sh"}
 SETENV_CMD="/usr/bin/env"
 REALPATH_CMD="/bin/realpath"
@@ -54,7 +54,7 @@ done
 SETENV="${SETENV_CMD} \
   CWD=\"$(pwd)\" \
   DOTSPX=\"${DOTSPX}\" \
-  SPX_MODULESDIR=\"${SPX_MODULESDIR}\" \
+  SPX_MODULESDIR=${SPX_MODULESDIR} \
   flag_help=$flag_help \
   flag_verbose=$flag_verbose \
   flag_dryrun=$flag_dryrun \
@@ -69,10 +69,10 @@ if $needinit && [ $subcom != "init" ]; then
 	err 1 ".spx directory is not found." \
 	    "You need \"spx init\" to make the current directory ready for spx."
 fi
-if [ -r "${SPX_MODULESDIR}/$subcom" ]; then
+if [ -r ${SPX_MODULESDIR}/$subcom ]; then
 	echo_verbose "INFO: .spx directory: ${DOTSPX}"
 	shift
-	exec ${SETENV} ${SPX_SHELL} "${SPX_MODULESDIR}/$subcom" "$@"
+	exec ${SETENV} ${SPX_SHELL} ${SPX_MODULESDIR}/$subcom "$@"
 else
 	err 1 "$subcom: invalid subcommand"
 fi
