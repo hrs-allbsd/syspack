@@ -260,10 +260,12 @@ INCVARS= \
 	JAIL
 .for _V in ${INCVARS}
 # .  if !defined(${_V}) || empty(${_V})
+## XXX: test -f then -r is needed because it can be an auto-created
+## directory by the automounter.
 _${_V}!= \
 	d=${.CURDIR} && \
 	for i in 1 2 3 4 5 6 7 8 9; do \
-	    if [ -r "$$d/Makefile.inc" ]; then \
+	    if [ -f "$$d/Makefile.inc" -a -r "$$d/Makefile.inc" ]; then \
 		v=$$(${AWK_CMD} -F= '/${_V}[ 	]*=/ { print $$NF }' \
 		  "$$d/Makefile.inc"); \
 		case $$v in \
