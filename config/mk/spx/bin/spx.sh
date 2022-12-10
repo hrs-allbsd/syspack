@@ -52,7 +52,7 @@ while :; do
 done
 
 SETENV="${SETENV_CMD} \
-  CWD=\"$(pwd)\"" \
+  CWD=\"$(pwd)\" \
   DOTSPX=\"${DOTSPX}\" \
   SPX_MODULESDIR=\"${SPX_MODULESDIR}\" \
   flag_help=$flag_help \
