@@ -9,7 +9,6 @@
 : ${SPX_MODULESDIR:="${SPX_LIBEXECDIR}/modules"}
 : ${SPX_SHELL:="/bin/sh"}
 SETENV_CMD="/usr/bin/env"
-SETENV="CWD=\"$(pwd)\""
 REALPATH_CMD="/bin/realpath"
 
 warn0() { echo "$@" 1>&2; }
@@ -39,7 +38,6 @@ args=$(getopt hnv $*)
 if [ $? -ne 0 ]; then
 	usage 2
 fi
-SETENV=
 flag_help=0
 flag_verbose=0
 flag_dryrun=0
@@ -53,31 +51,28 @@ while :; do
 	esac
 done
 
-SETENV="${SETENV} \
+SETENV="${SETENV_CMD} \
+  CWD=\"$(pwd)\"" \
+  DOTSPX=\"${DOTSPX}\" \
+  SPX_MODULESDIR=\"${SPX_MODULESDIR}\" \
   flag_help=$flag_help \
   flag_verbose=$flag_verbose \
   flag_dryrun=$flag_dryrun \
 "
-
 subcom=${1-"help"}
 
 # XXX: sanity check
 if [ ! -d "${SPX_MODULESDIR}" ]; then
 	err 1 "Module directory (${SPX_MODULESDIR}) is not found."
 fi
-
 if $needinit && [ $subcom != "init" ]; then
 	err 1 ".spx directory is not found." \
 	    "You need \"spx init\" to make the current directory ready for spx."
 fi
-
 if [ -r "${SPX_MODULESDIR}/$subcom" ]; then
 	echo_verbose "INFO: .spx directory: ${DOTSPX}"
 	shift
-	exec ${SETENV_CMD} ${SETENV} \
-	    DOTSPX="${DOTSPX}" \
-	    SPX_MODULESDIR="${SPX_MODULESDIR}" \
-	    ${SPX_SHELL} "${SPX_MODULESDIR}/$subcom" "$@"
+	exec ${SETENV} ${SPX_SHELL} "${SPX_MODULESDIR}/$subcom" "$@"
 else
 	err 1 "$subcom: invalid subcommand"
 fi
