@@ -174,12 +174,12 @@ _HEADING1S=	heading() { \
 .if defined(DESTDIR) && !empty(DESTDIR)
 _D:=	${DESTDIR}
 DESTDIR:=	${_D}x
-.if "${_D}" == "${DESTDIR}"
-.error DESTDIR must not be defined in a command-line option or environment variable.  Use INSTALL_DESTDIR instead
-.else
+.  if "${_D}" == "${DESTDIR}"
+.  error DESTDIR (defined as ${DESTDIR}) must not be defined in a command-line option or environment variable.  Use INSTALL_DESTDIR instead
+.  else
 DESTDIR:=	${_D}
-.info DESTDIR=${_D}
-.endif
+.  info DESTDIR=${_D}
+.  endif
 .endif
 
 # Ordering is important:
@@ -192,7 +192,12 @@ _PLUGINS_1=	logging
 _PLUGINS_2=	stored templates \
 		install diff fetch status reconcile backup
 _PLUGINS_X=	services jail krb5princ release pkg \
-		world world-tarballs
+		world
+_W=fetch build install	# depends on world
+_PLUGINS_X+=	${_W:S/^/world-/} ${_W:S/^/world-/:S/$/-post/} 
+_PLUGINS_X+=	world-tarballs
+
+
 _PLUGINS_Y=	${PLUGINS}
 _PLUGINS_Z=	check
 _PLUGINS=	${_PLUGINS_1} \
