@@ -36,7 +36,7 @@ VARS.world+= \
 	WORLD_TAG
 
 .if defined(WORLD_TAG) && !empty(WORLD_TAG)
-.  if empty(WORLD_TAG:N*/*)
+.  if empty(WORLD_TAG:M*/*)
 .error ${SPX_ERROR} WORLD_TAG is invalid
 .  else
 WORLD_FETCH_CMD_TAGOPT=	-b ${WORLD_TAG}
@@ -63,14 +63,16 @@ world-fetch-clean.DESC=	clean source files for world in ${WORLD_SRCDIR:tA}
 .if !empty(WORLD_SRCDIR)
 .  if exists(${WORLD_SRCDIR})
 world-fetch:
-	@echo "WORLD_SRCDIR (${WORLD_SRCDIR}) is already populated."
+	@echo "WORLD_SRCDIR (${WORLD_SRCDIR}) is already populated."; \
+	echo "make world-fetch-clean can be used to remove it"
 world-fetch-clean:
 	@( \
 	_yes() { \
 		rm -rf "${WORLD_SRCDIR}"; \
 		echo "done."; \
 	}; \
-	${CHECKYESNO} "A source for the world in ${WORLD_SRCDIR}."; \
+	${CHECKYESNO} \
+	    "A source for the world in ${WORLD_SRCDIR} will be removed."; \
 	)
 .  else
 world-fetch-full:
