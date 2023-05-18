@@ -35,14 +35,21 @@ __<world.mk>__:
 # Replace @ with GLOBALBASE
 #
 WORLD_SRCDIR:=	${WORLD_SRCDIR:C,^@,${GLOBALBASE:tA}/world,}
-.  if empty(WORLD_SRCDIR:M/*) && ${.OBJDIR} != ${.CURDIR}
+.  if empty(WORLD_SRCDIR:M/*)
+.    if ${.OBJDIR} != ${.CURDIR}
 WORLD_SRCDIR:=	${.CURDIR}/world/${WORLD_SRCDIR}
+_WORLD_SRCDIR_README=	${.CURDIR}/world/README
+.    else
+WORLD_SRCDIR:=	world/${WORLD_SRCDIR}
+_WORLD_SRCDIR_README=	world/README
+.    endif
 .  endif
 .endif
 #
 # Normalize WORLD_DESTDIR using ${JAIL_BASE}/${JAIL} if any 
 #
-WORLD_DESTDIR?=	${"${JAIL}" != "":?${JAIL_BASE}/${JAIL}:/} 
+WORLD_DESTDIR:=	${"${JAIL}" != "":?${JAIL_BASE}/${JAIL}:}${WORLD_DESTDIR}
+
 WORLD_KERNCONF?=	GENERIC
 
 VARS.world+= \
