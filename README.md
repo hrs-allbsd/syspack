@@ -27,6 +27,9 @@ The spx(8) utility can be installed
 
 % cd config/mk/spx && make install
 
+You also need sudo(8) or doas(1) on your system and it should work
+without typing a password.
+
 ## Create a template for your site
 
 % mkdir s
