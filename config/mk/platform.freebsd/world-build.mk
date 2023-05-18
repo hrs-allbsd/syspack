@@ -65,12 +65,13 @@ _TARGETS.world-build=\
 		world-buildkernel-noclean \
 		world-status \
 		world-show-params \
-		world-fetch-clean \
 		world-build-clean \
-		destroyworld
+		buildworld \
+		buildkernel
 world-buildworld.DESC=	build world
+buildworld.DESC=	build world
 world-buildkernel.DESC=	build kernel
-destroyworld.DESC=	remove results of world-buildkernel
+buildkernel.DESC=	build kernel
 #
 # Create temporary directory for release bits.
 #
@@ -178,21 +179,22 @@ world-buildkernel-logclean:
 
 WORLD_OBJDIR_DONE=	${WORLD_OBJDIR_WORLD_DONE}
 WORLD_INSTALL_TARGETS=	world-installworld
+KERNEL_INSTALL_TARGETS=	world-installkernel
 .if defined(WORLD_KERNCONF) && !empty(WORLD_KERNCONF)
 WORLD_OBJDIR_DONE+=	${WORLD_OBJDIR_KERNEL_DONE}
-WORLD_INSTALL_TARGETS+=	world-installkernel
+WORLD_INSTALL_TARGETS+=	${KERNEL_INSTALL_TARGETS}
 _KERN_MESSAGE=	(including ${WORLD_KERNCONF} kernel)
 .endif
 
 .ORDER: world-show-params ${WORLD_OBJDIR_DONE} world-status
 world world-noclean: world-show-params ${WORLD_OBJDIR_DONE} world-status
-world-buildworld world-buildworld-noclean: \
+world-buildworld world-buildworld-noclean buildworld buildworld-noclean: \
     world-show-params ${WORLD_OBJDIR_WORLD_DONE} world-status
 .if defined(WORLD_KERNCONF)
-world-buildkernel world-buildkernel-noclean: \
+world-buildkernel world-buildkernel-noclean buildkernel buildkernel-noclean: \
     world-show-params ${WORLD_OBJDIR_KERNEL_DONE} world-status
 .else
-world-buildkernel world-buildkernel-noclean:
+world-buildkernel world-buildkernel-noclean buildkernel buildkernel-noclean:
 	@echo "Define WORLD_KERNCONF first." && false
 .endif
 world-check:
@@ -219,20 +221,6 @@ world-status-build:
 	fi
 .endif
 
-.if exists(${WORLD_SRCDIR})
-world-fetch-clean:
-	@( \
-	_yes() { \
-		rm -rf ${WORLD_SRCDIR}; \
-		echo "done."; \
-	}; \
-	${CHECKYESNO} "A source for the world in ${WORLD_SRCDIR}."; \
-	)
-.else
-world-fetch-clean:
-	@echo "There is no source to be cleaned in ${WORLD_SRCDIR}"
-.endif
-
 .if exists(${WORLD_OBJDIR})
 world-build-clean:
 	@( \
@@ -247,18 +235,4 @@ world-build-clean:
 	@echo "There is no build result to be cleaned in ${WORLD_OBJDIR}"
 .endif
 
-destroyworld: root-check
-	@if [ -r ${WORLD_DESTDIR} ]; then \
-	( \
-	_yes() { \
-		chflags -R noschg ${WORLD_DESTDIR} && \
-		rm -rf ${WORLD_DESTDIR}; \
-		echo "done."; \
-	}; \
-	${CHECKYESNO} \
-	    "The installed world in ${WORLD_DESTDIR} will be removed."; \
-	); \
-	else \
-		echo "There is no world to be destroyed in ${WORLD_DESTDIR}"; \
-	fi
 .endif
