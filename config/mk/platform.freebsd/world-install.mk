@@ -46,12 +46,15 @@ VARS.world+= \
 
 _TARGETS.world-install=	\
 		installworld \
+		destroyworld \
 		world-installworld \
 		world-installkernel \
 		mergemaster \
 		etcupdate \
 		etcupdate-diff \
 		etcupdate-status
+
+destroyworld.DESC=	destro the system in ${WORLD_DESTDIR}
 #
 # make installworld and installkernel.
 # Populate ${ETCUPDATE_DBDIR} if not yet.
@@ -78,17 +81,17 @@ ${WORLD_INSTALL_TARGETS}::
 		fi && \
 		if [ ${.TARGET} = "world-installworld" ]; then \
 		    if [ ! -r ${ETCUPDATE_DBDIR} ]; then \
-			cd ${.CURDIR} && ${WMAKE} etcupdate-build && \
+			cd ${.CURDIR} && ${MAKE} etcupdate-build && \
 			mkdir -p ${ETCUPDATE_DBDIR}/current && \
-			cd ${.CURDIR} && ${WMAKE} etcupdate-run && \
+			cd ${.CURDIR} && ${MAKE} etcupdate-run && \
 			rmdir ${ETCUPDATE_DBDIR}/old && \
 			rm -f ${ETCUPDATE_DBDIR}/old.files && \
-			cd ${.CURDIR} && ${WMAKE} etcupdate-extract; \
+			cd ${.CURDIR} && ${MAKE} etcupdate-extract; \
 		    else \
 			echo "===> Running 'etcupdate build'..."; \
-			cd ${.CURDIR} && ${WMAKE} etcupdate-build && \
+			cd ${.CURDIR} && ${MAKE} etcupdate-build && \
 			echo "===> Running 'etcupdate'..."; \
-			cd ${.CURDIR} && ${WMAKE} etcupdate-run; \
+			cd ${.CURDIR} && ${MAKE} etcupdate-run; \
 		    fi; \
 		fi; \
 	else \
@@ -104,6 +107,29 @@ installworld: root-check
 	${CHECKYESNO} \
 	"The new world ${_KERN_MESSAGE} will be installed into ${WORLD_DESTDIR}."; \
 	)
+installkernel: root-check
+	@( \
+	_yes() { \
+	${KERNEL_INSTALL_TARGETS:C|(.+)|cd ${.CURDIR} \&\& ${MAKE} \1 \&\&|} true; \
+	}; \
+	${CHECKYESNO} \
+	"The ${WORLD_KERNCONF} kernel will be installed into ${WORLD_DESTDIR}."; \
+	)
+destroyworld: root-check
+	@if [ -r ${WORLD_DESTDIR} ]; then \
+	( \
+	_yes() { \
+		chflags -R noschg ${WORLD_DESTDIR} && \
+		rm -rf ${WORLD_DESTDIR}; \
+		echo "done."; \
+	}; \
+	${CHECKYESNO} \
+	     "The installed world in ${WORLD_DESTDIR} will be removed."; \
+	); \
+	else \
+		echo "There is no world to be destroyed in ${WORLD_DESTDIR}"; \
+	fi
+.endif
 #
 # etcupdate
 # XXX: incomplete
@@ -165,4 +191,3 @@ mergemaster: world-check root-check
 	    -m ${_SRCDIR:tA} \
 	    -D ${WORLD_DESTDIR:tA} \
 	    -t ${WORLD_OBJDIR:tA}/.mergemaster
-.endif
