@@ -35,15 +35,6 @@ VARS.world+= \
 	WORLD_FETCH_CMD \
 	WORLD_TAG
 
-.if !empty(WORLD_SRCDIR) && exists(${WORLD_SRCDIR})
-world-fetch:
-	@echo "[ERROR]" "WORLD_SRCDIR (${WORLD_SRCDIR}) is already populated."
-.endif
-
-.if !empty(WORLD_SRCDIR) && empty(WORLD_SRCDIR:M/*) && ${.OBJDIR} != ${.CURDIR}
-WORLD_SRCDIR:=	${.CURDIR}/world/${WORLD_SRCDIR}
-.endif
-
 .if defined(WORLD_TAG) && !empty(WORLD_TAG)
 .  if empty(WORLD_TAG:N*/*)
 .error ${SPX_ERROR} WORLD_TAG is invalid
@@ -63,13 +54,37 @@ WORLD_SHALLOW_FETCH_CMD?=${WORLD_FETCH_CMD} --depth=1
 # world-fetch target (will be added to TARGETS.world in -post.mk)
 #
 _TARGETS.world-fetch=	world-fetch \
-			world-fetch-full
+			world-fetch-full \
+			world-fetch-clean
 world-fetch.DESC=	fetch source files for world (shallow clone)
 world-fetch-full.DESC=	fetch source files for world (full clone)
+world-fetch-clean.DESC=	clean source files for world in ${WORLD_SRCDIR:tA}
 
-.if !empty(WORLD_SRCDIR) && !exists(${WORLD_SRCDIR})
-world-fetch-full:
-	${WORLD_FETCH_CMD} ${WORLD_SRCDIR}
+.if !empty(WORLD_SRCDIR)
+.  if exists(${WORLD_SRCDIR})
 world-fetch:
-	${WORLD_SHALLOW_FETCH_CMD} ${WORLD_SRCDIR}
+	@echo "[ERROR]" "WORLD_SRCDIR (${WORLD_SRCDIR}) is already populated."
+world-fetch-clean:
+	@( \
+	_yes() { \
+		rm -rf "${WORLD_SRCDIR}"; \
+		echo "done."; \
+	}; \
+	${CHECKYESNO} "A source for the world in ${WORLD_SRCDIR}."; \
+	)
+.  else
+world-fetch-full:
+	${WORLD_FETCH_CMD} "${WORLD_SRCDIR}"
+.    if defined(_WORLD_SRCDIR_README)
+	echo "# ${WORLD_SRCDIR} is the source tree used for ${WORLD_ID}" \
+	    > ${_WORLD_SRCDIR_README}
+.    endif
+world-fetch:
+	${WORLD_SHALLOW_FETCH_CMD} "${WORLD_SRCDIR}"
+.    if defined(_WORLD_SRCDIR_README)
+	echo "# DO NOT REMOVE THIS FILE" > ${_WORLD_SRCDIR_README}
+.    endif
+world-fetch-clean:
+	@echo "There is no source to be cleaned in ${WORLD_SRCDIR}"
+.  endif
 .endif
