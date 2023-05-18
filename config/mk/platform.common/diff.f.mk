@@ -81,10 +81,13 @@ diff-${_tag}::
 		fi; \
 	    fi; \
 	fi; \
-	_exists=$$(${SUEXEC_CMD} ${SH_CMD} -c \
-	    "if [ -e $${_dstdir}/${_file:T} -a \
-	    -r $${_dstdir}/${_file:T} ]; then \
-	      if ${CMP_CMD} $${_dstdir}/${_file:T} $${_src}; then \
+	: "XXX: [ -e is broken on Solaris 7" ;\
+	: "XXX: CMP_CMD requires $$_src access and SUEXEC_CMD can fail," ;\
+	: "XXX: so using stdin." ;\
+	_exists=$$(${CAT_CMD} "$${_src}" | ${SUEXEC_CMD} ${SH_CMD} -c \
+	    "if ${TEST_CMD} -e $${_dstdir}/${_file:T} -a \
+	    -r $${_dstdir}/${_file:T}; then \
+	      if ${CMP_CMD} "$${_dstdir}/${_file:T}" - 2> /dev/null; then \
 	        echo 2; \
 	      else \
 	        echo 1; \
@@ -164,10 +167,13 @@ diff-${_tag}:: ${_file:T}
 	      _label="${_FA}$${_label}${_FE}"; \
 	    fi; \
 	fi; \
-	_exists=$$(${SUEXEC_CMD} ${SH_CMD} -c \
-	    "if [ -e $${_dstdir}/${_file:T} -a \
-	    -r $${_dstdir}/${_file:T} ]; then \
-	      if ${CMP_CMD} $${_dstdir}/${_file:T} $${_src}; then \
+	: "XXX: [ -e is broken on Solaris 7" ;\
+	: "XXX: CMP_CMD requires $$_src access and SUEXEC_CMD can fail," ;\
+	: "XXX: so using stdin." ;\
+	_exists=$$(${CAT_CMD} "$${_src}" | ${SUEXEC_CMD} ${SH_CMD} -c \
+	    "if ${TEST_CMD} -e $${_dstdir}/${_file:T} -a \
+	    -r $${_dstdir}/${_file:T}; then \
+	      if ${CMP_CMD} "$${_dstdir}/${_file:T}" - 2> /dev/null; then \
 	        echo 2; \
 	      else \
 	        echo 1; \
