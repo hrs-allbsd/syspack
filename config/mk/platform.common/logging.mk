@@ -130,9 +130,18 @@ _LOGTAIL_CMD= \
 	    ${TAILF_CMD} "$$1"; \
 	  ' "$$@"; \
 	}; \
-	else \
+	elif [ -n "${_WIN_NEW_CMD}" ]; then \
 	logtail() { \
 	  ${_WIN_NEW_CMD} "$$1" ${SH_CMD} -c ' \
+	    h="$$0($$1) [Ctrl-C to close]"; \
+	    ${_HEADING1} "$$h"; \
+	    printf "${ESC_TITLE_ENTER}$$h${ESC_TITLE_EXIT}"; \
+	    ${TAILF_CMD} "$$1"; \
+	  ' "$$@"; \
+	}; \
+	else \
+	logtail() { \
+	  ${SH_CMD} -c ' \
 	    h="$$0($$1) [Ctrl-C to close]"; \
 	    ${_HEADING1} "$$h"; \
 	    printf "${ESC_TITLE_ENTER}$$h${ESC_TITLE_EXIT}"; \

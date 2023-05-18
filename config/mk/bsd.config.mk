@@ -126,11 +126,12 @@ _WIN_ADD_CMD?= ${_WIN_CMD} new-window -n
 _WIN_ADD_CMD_EVAL=	false
 _WIN_TITLE_CMD?= ${_WIN_CMD} set-option set-titles-string
 .else
-IS_WIN=		:
+IS_WIN=		false
 _WIN_CMD=	:
 _WIN_ADD_CMD=	:
 _WIN_ADD_CMD_EVAL=:
-_WIN_NEW_CMD=	:
+# Do not define _WIN_NEW_CMD for plain tail-F.  See logging.mk.
+# _WIN_NEW_CMD=	:
 _WIN_NEW_CMD_EVAL=:
 .endif
 #
