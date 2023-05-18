@@ -82,7 +82,8 @@ world-fetch-full:
 world-fetch:
 	${WORLD_SHALLOW_FETCH_CMD} "${WORLD_SRCDIR}"
 .    if defined(_WORLD_SRCDIR_README)
-	echo "# DO NOT REMOVE THIS FILE" > ${_WORLD_SRCDIR_README}
+	echo "# ${WORLD_SRCDIR} is the source tree used for ${WORLD_ID}" \
+	    > ${_WORLD_SRCDIR_README}
 .    endif
 world-fetch-clean:
 	@echo "There is no source to be cleaned in ${WORLD_SRCDIR}"
