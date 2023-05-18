@@ -39,7 +39,7 @@ fetch-${_tag}::
 	else \
 	    _done=; \
 	    while [ -z "$$_done" ]; do \
-		if cmp -s "${DESTDIR}${_dir}/${_file:T}" "${.CURDIR}/${_file:T}"; then \
+		if ${CMP_CMD} -s "${DESTDIR}${_dir}/${_file:T}" "${.CURDIR}/${_file:T}"; then \
 			echo "==> [${_file:T}] is skipped because" \
 			    "already staged."; \
 			_done=1; \
