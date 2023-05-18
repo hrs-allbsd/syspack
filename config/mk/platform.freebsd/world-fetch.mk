@@ -78,13 +78,13 @@ world-fetch-clean:
 world-fetch-full:
 	${WORLD_FETCH_CMD} "${WORLD_SRCDIR}"
 .    if defined(_WORLD_SRCDIR_README)
-	echo "# ${WORLD_SRCDIR} is the source tree used for ${WORLD_ID}" \
+	@echo "# ${WORLD_SRCDIR} is the source tree used for ${WORLD_ID}" \
 	    > ${_WORLD_SRCDIR_README}
 .    endif
 world-fetch:
 	${WORLD_SHALLOW_FETCH_CMD} "${WORLD_SRCDIR}"
 .    if defined(_WORLD_SRCDIR_README)
-	echo "# ${WORLD_SRCDIR} is the source tree used for ${WORLD_ID}" \
+	@echo "# ${WORLD_SRCDIR} is the source tree used for ${WORLD_ID}" \
 	    > ${_WORLD_SRCDIR_README}
 .    endif
 world-fetch-clean:
