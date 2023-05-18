@@ -63,7 +63,7 @@ world-fetch-clean.DESC=	clean source files for world in ${WORLD_SRCDIR:tA}
 .if !empty(WORLD_SRCDIR)
 .  if exists(${WORLD_SRCDIR})
 world-fetch:
-	@echo "[ERROR]" "WORLD_SRCDIR (${WORLD_SRCDIR}) is already populated."
+	@echo "WORLD_SRCDIR (${WORLD_SRCDIR}) is already populated."
 world-fetch-clean:
 	@( \
 	_yes() { \
