@@ -31,6 +31,7 @@ __<backup.mk>__:
 .endif
 
 TARGETS.backup=	backup
+backup.DESC=	(not implemented yet)
 SUBDIR_TARGETS.backup=	backup
 
 .PHONY: backup

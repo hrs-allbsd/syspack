@@ -31,7 +31,7 @@ __<reconcile.mk>__:
 .endif
 
 TARGETS.reconcile=	reconcile
-reconcile.DESC=	Reconcile files when ones in the destination are modified
+reconcile.DESC=	Reconcile files directly modified in the destination
 SUBDIR_TARGETS.reconcile=	reconcile
 VARS.reconcile=	RECONCILE_FLAGS
 
