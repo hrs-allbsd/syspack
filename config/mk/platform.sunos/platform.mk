@@ -24,6 +24,7 @@ HOSTNAME_CMD?=	/usr/xpg4/bin/id -n
 AWK_CMD?=	/usr/bin/awk
 TAIL_CMD?=	/usr/bin/tail
 TAILF_CMD?=	/usr/bin/tail -f
+PATCH_CMD?=	/usr/bin/patch
 
 # BSD stat
 GETPERM_CMD?=	${LOCALBASE}/bin/stat -f "%Mp%Lp"

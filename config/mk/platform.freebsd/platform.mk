@@ -20,6 +20,7 @@ HOSTNAME_CMD?=	/bin/hostname
 AWK_CMD?=	/usr/bin/awk
 TAIL_CMD?=	/usr/bin/tail
 TAILF_CMD?=	/usr/bin/tail -F
+PATCH_CMD?=	/usr/bin/patch
 
 SUDO_CMD?=	${LOCALBASE}/bin/sudo
 DOAS_CMD?=	${LOCALBASE}/bin/doas

@@ -194,7 +194,7 @@ _PLUGINS_2=	stored templates \
 		install diff fetch status reconcile backup
 _PLUGINS_X=	services jail krb5princ release pkg \
 		world
-_W=fetch build install	# depends on world
+_W=fetch patch build install	# depends on world
 _PLUGINS_X+=	${_W:S/^/world-/} ${_W:S/^/world-/:S/$/-post/} 
 _PLUGINS_X+=	world-tarballs
 

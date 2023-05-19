@@ -19,6 +19,7 @@ HOSTNAME_CMD?=	/bin/hostname
 AWK_CMD?=	/usr/bin/awk
 TAIL_CMD?=	/usr/bin/tail
 TAILF_CMD?=	/usr/bin/tail -f
+PATCH_CMD?=	/usr/bin/patch
 
 # GNU stat
 GETPERM_CMD?=	/usr/bin/stat --printf "%a"
