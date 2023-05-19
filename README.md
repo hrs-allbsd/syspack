@@ -33,7 +33,9 @@ without typing a password.
 ## Create a template for your site
 
 % mkdir s
+
 % cd s
+
 % spx init yoursitename
 
 The "s" directory is the root for spx-managed files.  You can choose
@@ -56,7 +58,9 @@ There is an example rc.conf in foo/etc directory, so
 update it by removing it first and then invoking make fetch: 
 
 % cd example.com/foo/etc
+
 % rm rc.conf
+
 % make fetch
 
 The make fetch will copy /etc/rc.conf to example.com/foo/etc.
@@ -68,6 +72,7 @@ are a typical cycle when you configure a system.  Let's add a comment line
 to rc.conf.  Not in /etc but in example.com/foo/etc:
 
 % cd example.com/foo/etc
+
 % echo "# test" >> rc.conf
 
 If you got a permission denied error, do "chmod +w rc.conf" in addition to it.
@@ -140,9 +145,9 @@ There is a case you want to change the file permission and/or owner.
 You can define them per-file basis using the following syntax:
 
 FILES=		rc.conf
-FILESMODE.rc.conf=	0644
-FILESOWN.rc.conf=	root
-FILESGRP.rc.conf=	wheel
+FILESMODE_rc.conf=	0644
+FILESOWN_rc.conf=	root
+FILESGRP_rc.conf=	wheel
 
 If you define MODE, OWN, GRP without the filename, they will be applied
 to all of the files:
