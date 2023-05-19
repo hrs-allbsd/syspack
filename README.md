@@ -25,18 +25,20 @@ Solaris and more.
 
 The spx(8) utility can be installed
 
+```
 % cd config/mk/spx && make install
+```
 
 You also need sudo(8) or doas(1) on your system and it should work
 without typing a password.
 
 ## Create a template for your site
 
+```
 % mkdir s
-
 % cd s
-
 % spx init yoursitename
+```
 
 The "s" directory is the root for spx-managed files.  You can choose
 a name.  The "yoursitename" parameter is typically an FQDN (e.g.,
@@ -57,11 +59,11 @@ directory example.com/foo/etc means /etc on foo.example.com.
 There is an example rc.conf in foo/etc directory, so
 update it by removing it first and then invoking make fetch: 
 
+```
 % cd example.com/foo/etc
-
 % rm rc.conf
-
 % make fetch
+```
 
 The make fetch will copy /etc/rc.conf to example.com/foo/etc.
 
@@ -71,33 +73,46 @@ Modifying one or more configuration files, installing them, and testing them
 are a typical cycle when you configure a system.  Let's add a comment line
 to rc.conf.  Not in /etc but in example.com/foo/etc:
 
+```
 % cd example.com/foo/etc
-
 % echo "# test" >> rc.conf
+```
 
 If you got a permission denied error, do "chmod +w rc.conf" in addition to it.
 
 You can check what change is added by using "make diff":
 
+```
 % make diff
+```
 
 And "make status" lists what files are changed:
 
+```
 % make status
+
+```
 
 Syspack provides various make targets.  You can check what is available:
 
+```
 % make targets
+```
 
 and you can get more details for them:
 
+```
 % make targets-terse
+
+```
 
 ## Configuration file editing cycle
 
 For rc.conf in the previous section, you can install it to /etc/rc.conf:
 
+```
 % make install
+```
 
 The following is the typical editing cycle:
 
@@ -121,19 +136,25 @@ make reconcile invokes sdiff(1).
 
 The files and their destination are defined in foo/etc/Makefile:
 
+```
 FILESDIR=	/etc
 FILES=		rc.conf
+```
 
 If you want to manage /etc/hosts, you can simply add it like this:
 
+```
 FILESDIR=	/etc
 FILES=		rc.conf hosts
+```
 
 or multiple lines are allowed with a backslash at the end of the line:
 
+```
 FILESDIR=	/etc
 FILES=		rc.conf \
 		hosts
+```
 
 make diff, install, and reconcile work for multiple files.  If you want to
 limit the file handled by the make targets, you can use "make diff-rc.conf".
@@ -144,18 +165,22 @@ See the results of "make targets-terse".
 There is a case you want to change the file permission and/or owner.
 You can define them per-file basis using the following syntax:
 
+```
 FILES=		rc.conf
 FILESMODE_rc.conf=	0644
 FILESOWN_rc.conf=	root
 FILESGRP_rc.conf=	wheel
+```
 
 If you define MODE, OWN, GRP without the filename, they will be applied
 to all of the files:
 
+```
 FILES=		rc.conf hosts
 FILESMODE=	0644
 FILESOWN=	root
 FILESGRP=	wheel
+```
 
 ## Another destination directory
 
@@ -163,15 +188,19 @@ You can copy the foo/etc directory for another destination, say /etc/mail.
 A recommended directory name is foo/etc.mail, and foo/etc.mail/Makefile
 should look like this: 
 
+```
 FILESDIR=	/etc/mail
 FILES=		aliases
+```
 
 .include <bsd.prog.mk>
 
 When you add a new directory, update the following line in foo/Makefile:
 
+```
 SUBDIR=	etc \
 	etc.mail
+```
 
 You can use status, diff, reconcile, and install at the example.com/foo directory.
 
@@ -181,17 +210,21 @@ Files under /etc/mail are related to sendmail service.  So you usually need
 to restart the daemon after editing them.  This operation can be integrated
 by defining the following variables in foo/etc.mail/Makefile:
 
+```
 SERVICES=	sendmail
+```
 
 After adding it, you can see the following new targets in the results of
 make targets:
 
+```
  sendmail-start
  sendmail-stop
  sendmail-restart
  sendmail-reload
  sendmail-status
  sendmail-log
+```
 
 and "make status" now reports PIDs of sendmail daemons.
 
@@ -203,7 +236,9 @@ After invoking "make start," you should check the log files.  If the following
 variable is defined, /var/log/maillog is automatically shown after
 "make start":
 
+```
 LOGFILE.sendmail=	/var/log/maillog  
+```
 
 The log files are shown using tmux(1) or screen(1) if available.  If there is
 none of them, tail(1) is used instead.  If you have the both on the system,
