@@ -39,16 +39,16 @@ if [ "$SITE" != "" ]; then
 	[ -f "$SITE/Makefile.inc" ]  || FILES="$FILES $SITE/Makefile.inc"
 fi
 if [ $needexample = 1 ]; then
-	[ -d $SITE/example ] || DIRS="$DIRS $SITE/example"
+	[ -d $SITE/simple ] || DIRS="$DIRS $SITE/simple"
 	[ -d $SITE/templates ] || DIRS="$DIRS $SITE/templates"
 	for f in \
-	    $SITE/example/Makefile \
-	    $SITE/example/Makefile.inc \
-	    $SITE/example/root/Makefile \
-	    $SITE/example/root/Makefile.inc \
-	    $SITE/example/root/etc/Makefile \
-	    $SITE/example/root/etc/Makefile.inc \
-	    $SITE/example/root/etc/rc.conf; do
+	    $SITE/simple/Makefile \
+	    $SITE/simple/Makefile.inc \
+	    $SITE/simple/root/Makefile \
+	    $SITE/simple/root/Makefile.inc \
+	    $SITE/simple/root/etc/Makefile \
+	    $SITE/simple/root/etc/Makefile.inc \
+	    $SITE/simple/root/etc/rc.conf; do
 		[ -f $_f ]  || FILES="$FILES $_f"
 	done
 fi
@@ -112,29 +112,29 @@ if [ $needexample = 0 ]; then
 	exit
 fi
 #
-# $SITE/example
+# $SITE/simple
 #
-cat <<EOT | create_file $SITE/example/Makefile.inc
-TARGETHOST=	example.$SITE
+cat <<EOT | create_file $SITE/simple/Makefile.inc
+TARGETHOST=	simple.$SITE
 
 .include "\${.PARSEDIR}/../Makefile.inc"
 EOT
 #
-cat <<EOT | create_file $SITE/example/Makefile
-# This is an example for example.$SITE
+cat <<EOT | create_file $SITE/simple/Makefile
+# This is an example for simple.$SITE
 
 SUBDIR=	etc
 
 .include <bsd.subdir.mk>
 EOT
 #
-cat <<EOT | create_file $SITE/example/etc/Makefile.inc
+cat <<EOT | create_file $SITE/simple/etc/Makefile.inc
 # DO NOT EDIT
 .include "\${.PARSEDIR}/../Makefile.inc"
 EOT
 #
-cat <<EOT | create_file $SITE/example/etc/Makefile
-# This is an example for example.$SITE
+cat <<EOT | create_file $SITE/simple/etc/Makefile
+# This is an example for simple.$SITE
 
 FILESDIR=	/etc
 FILES=	rc.conf
@@ -142,10 +142,10 @@ FILES=	rc.conf
 .include <bsd.prog.mk>
 EOT
 #
-cat <<EOT | create_file $SITE/example/etc/rc.conf
-# This is an example rc.conf for example.$SITE
+cat <<EOT | create_file $SITE/simple/etc/rc.conf
+# This is an example rc.conf for simple.$SITE
 
-hostname="example.$SITE"
+hostname="simple.$SITE"
 EOT
 
 echo "Done."
