@@ -43,6 +43,9 @@ __<status.f.mk>__:
     ${_tag} ${_group} ${_dir} ${_file} ${_filemode} ${_fileown} ${_filegrp}
 _DESTDIR_${_dir:hash}=${DESTDIR}${_dir}
 
+__enable__status-single__:
+__enable__sts__:
+
 . if !target(${_file:T})
 status-${_tag}::
 . else

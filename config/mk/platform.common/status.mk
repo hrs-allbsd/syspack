@@ -44,7 +44,9 @@ XXX= \
 		stt status-terse \
 		stts status-terse-single
 status.DESC=	show file status, including the sub-directories
+st.DESC=	synonym of "status"
 status-single.DESC=	show file status, only in the current directory
+sts.DESC=	synonym of "status-single"
 status-terse.DESC=	show file status in detail
 status-terse-single.DESC=	show file status in detail
 SUBDIR_TARGETS.status=	st status stt status-terse stts status-terse-single
