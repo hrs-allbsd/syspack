@@ -32,9 +32,13 @@ __<world.mk>__:
 
 .if defined(WORLD_SRCDIR) && !empty(WORLD_SRCDIR)
 #
-# Replace @ with GLOBALBASE
+# Replace @ with GLOBALBASE.  If "@" only, add "src".
 #
-WORLD_SRCDIR:=	${WORLD_SRCDIR:C,^@,${GLOBALBASE:tA}/world,}
+.  if ${WORLD_SRCDIR} == "@"
+WORLD_SRCDIR:=	${WORLD_SRCDIR:C,^@,${GLOBALBASE:tA}/.spx/world,}/src
+.  else
+WORLD_SRCDIR:=	${WORLD_SRCDIR:C,^@,${GLOBALBASE:tA}/.spx/world,}
+.  endif
 .  if empty(WORLD_SRCDIR:M/*)
 .    if ${.OBJDIR} != ${.CURDIR}
 WORLD_SRCDIR:=	${.CURDIR}/world/${WORLD_SRCDIR}
