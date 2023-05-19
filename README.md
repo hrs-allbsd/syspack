@@ -8,7 +8,7 @@ Syspack is a system configuration management framework
 covering the following scenarios and not limited to them:
 
 - Tracking changes of configuration files on a Unix-like
-  operating system such as /etc/hosts,
+  operating system such as `/etc/hosts`,
 
 - Generation and deployment of system images with customized
   configuration files,
@@ -17,19 +17,19 @@ covering the following scenarios and not limited to them:
   in a jail environment or as a virtual machine backed by
   bhyve or qemu.
 
-It uses spx(8) command line utility and BSD Make, and
+It uses `spx(8)` command line utility and BSD Make, and
 runs on Unix-like operating systems, including *BSD, Linux,
 Solaris and more.
 
 ## Installation
 
-The spx(8) utility can be installed
+The `spx(8)` utility can be installed
 
 ```
 % cd config/mk/spx && make install
 ```
 
-You also need sudo(8) or doas(1) on your system and it should work
+You also need `sudo(8)` or `doas(1)` on your system and it should work
 without typing a password.
 
 ## Create a template for your site
@@ -44,19 +44,20 @@ The "s" directory is the root for spx-managed files.  You can choose
 a name.  The "yoursitename" parameter is typically an FQDN (e.g.,
 example.com), but there is no specific restriction about the name, either.
 
-"spx init" generates files and directories under "yoursitename."
+`spx init` generates files and directories under "yoursitename."
 You can find the "example" directory, and it corresponds to a single
 host named "example."
 
-See yoursitename/example/Makefile.inc and adjust TARGETHOST as the
-real hostname, say "foo.example.com."  You can rename the "example" directory with
-yoursitename/foo for simplicity even after invoking spx(8).
-This means that "yoursitename/example" can be safely renamed to
-"example.com/foo".
+See `yoursitename/example/Makefile.inc` and adjust `TARGETHOST` as the
+real hostname, say `foo.example.com`.  You can rename the
+`example` directory with
+`yoursitename/foo` for simplicity even after invoking `spx(8)`.
+This also means that `yoursitename/example` can be safely renamed to
+`example.com/foo`.
 
-Files under example.com/foo are for the machine.  For example, in the
-directory example.com/foo/etc means /etc on foo.example.com.
-There is an example rc.conf in foo/etc directory, so
+Files under `example.com/foo` are for the machine.  For example, in the
+directory `example.com/foo/etc` means `/etc` on foo.example.com.
+There is an example rc.conf in `foo/etc` directory, so
 update it by removing it first and then invoking make fetch: 
 
 ```
@@ -65,28 +66,28 @@ update it by removing it first and then invoking make fetch:
 % make fetch
 ```
 
-The make fetch will copy /etc/rc.conf to example.com/foo/etc.
+The make fetch will copy `/etc/rc.conf` to `example.com/foo/etc`.
 
 ## Try it!
 
 Modifying one or more configuration files, installing them, and testing them
 are a typical cycle when you configure a system.  Let's add a comment line
-to rc.conf.  Not in /etc but in example.com/foo/etc:
+to rc.conf.  Not in `/etc` but in `example.com/foo/etc`:
 
 ```
 % cd example.com/foo/etc
 % echo "# test" >> rc.conf
 ```
 
-If you got a permission denied error, do "chmod +w rc.conf" in addition to it.
+If you got a permission denied error, do `chmod +w rc.conf` in addition to it.
 
-You can check what change is added by using "make diff":
+You can check what change is added by using `make diff`:
 
 ```
 % make diff
 ```
 
-And "make status" lists what files are changed:
+And `make status` lists what files are changed:
 
 ```
 % make status
@@ -103,12 +104,11 @@ and you can get more details for them:
 
 ```
 % make targets-terse
-
 ```
 
 ## Configuration file editing cycle
 
-For rc.conf in the previous section, you can install it to /etc/rc.conf:
+For `rc.conf` in the previous section, you can install it to `/etc/rc.conf`:
 
 ```
 % make install
@@ -116,32 +116,32 @@ For rc.conf in the previous section, you can install it to /etc/rc.conf:
 
 The following is the typical editing cycle:
 
-1. Edit files under foo/etc
-2. Check the change using make diff
-3. Install them into /etc using make install
+1. Edit files under `foo/etc`
+2. Check the change using `make diff`
+3. Install them into `/etc` using `make install`
 
-However, /etc/rc.conf can be changed directly.  In that case, you can
+However, `/etc/rc.conf` can be changed directly.  In that case, you can
 use make reconcile to merge the change back to the local copy.
 The modified workflow is as follows:
 
 0. Invoke make status, and if you get "C" lines, you have some differences.
    Check the diff using make diff, and then "make reconcile" to merge.
-1. Edit files under foo/etc
-2. Check the change using make diff
-3. Install them into /etc using make install
+1. Edit files under `foo/etc`
+2. Check the change using `make diff`
+3. Install them into `/etc` using make install
 
-make reconcile invokes sdiff(1).
+`make reconcile` invokes `sdiff(1)`.
 
 ## More files
 
-The files and their destination are defined in foo/etc/Makefile:
+The files and their destination are defined in `foo/etc/Makefile`:
 
 ```
 FILESDIR=	/etc
 FILES=		rc.conf
 ```
 
-If you want to manage /etc/hosts, you can simply add it like this:
+If you want to manage `/etc/hosts`, you can simply add it like this:
 
 ```
 FILESDIR=	/etc
@@ -156,9 +156,10 @@ FILES=		rc.conf \
 		hosts
 ```
 
-make diff, install, and reconcile work for multiple files.  If you want to
-limit the file handled by the make targets, you can use "make diff-rc.conf".
-See the results of "make targets-terse".
+`make diff`, `make install`, and `make reconcile` work for multiple files.
+If you want to
+limit the file handled by the make targets, you can use `make diff-rc.conf`.
+See the results of `make targets-terse`.
 
 ## Permissions
 
@@ -172,7 +173,7 @@ FILESOWN_rc.conf=	root
 FILESGRP_rc.conf=	wheel
 ```
 
-If you define MODE, OWN, GRP without the filename, they will be applied
+If you define `MODE`, `OWN`, `GRP` without the filename, they will be applied
 to all of the files:
 
 ```
@@ -184,31 +185,32 @@ FILESGRP=	wheel
 
 ## Another destination directory
 
-You can copy the foo/etc directory for another destination, say /etc/mail.
-A recommended directory name is foo/etc.mail, and foo/etc.mail/Makefile
+You can copy the `foo/etc` directory for another destination, say `/etc/mail`.
+A recommended directory name is `foo/etc.mail`, and `foo/etc.mail/Makefile`
 should look like this: 
 
 ```
 FILESDIR=	/etc/mail
 FILES=		aliases
-```
 
 .include <bsd.prog.mk>
+```
 
-When you add a new directory, update the following line in foo/Makefile:
+When you add a new directory, update the following line in `foo/Makefile`:
 
 ```
 SUBDIR=	etc \
 	etc.mail
 ```
 
-You can use status, diff, reconcile, and install at the example.com/foo directory.
+You can use `make status`, `make diff`, `make reconcile`, and
+`make install` at the `example.com/foo` directory.
 
 ## Service invocation
 
-Files under /etc/mail are related to sendmail service.  So you usually need
+Files under `/etc/mail` are related to sendmail service.  So you usually need
 to restart the daemon after editing them.  This operation can be integrated
-by defining the following variables in foo/etc.mail/Makefile:
+by defining the following variables in `foo/etc.mail/Makefile`:
 
 ```
 SERVICES=	sendmail
@@ -226,24 +228,24 @@ make targets:
  sendmail-log
 ```
 
-and "make status" now reports PIDs of sendmail daemons.
+and `make status` now reports PIDs of sendmail daemons.
 
-You can start sendmail daemons using "make sendmail-start".  You can also
-do it using just "make start."  The latter will invoke all of the services
-listed in SERVICES.
+You can start sendmail daemons using `make sendmail-start`.  You can also
+do it using just `make start`.  The latter will invoke all of the services
+listed in `SERVICES`.
 
-After invoking "make start," you should check the log files.  If the following
-variable is defined, /var/log/maillog is automatically shown after
-"make start":
+After invoking `make start`, you should check the log files.  If the following
+variable is defined, `/var/log/maillog` is automatically shown after
+`make start`:
 
 ```
 LOGFILE.sendmail=	/var/log/maillog  
 ```
 
-The log files are shown using tmux(1) or screen(1) if available.  If there is
-none of them, tail(1) is used instead.  If you have the both on the system,
-you can use PREFER_TMUX=yes or PREFER_SCREEN=yes environment variables
-to control which is used.
+The log files are shown using `tmux(1)` or `screen(1)` if available.
+If there is none of them, `tail(1)` is used instead.  If you have
+the both on the system, you can use `PREFER_TMUX=yes` or
+`PREFER_SCREEN=yes` environment variables to control which is used.
 
 ## Further reading
 
